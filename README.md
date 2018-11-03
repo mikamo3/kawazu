@@ -1,0 +1,2 @@
+# kawazu
+A dotfiles manager
