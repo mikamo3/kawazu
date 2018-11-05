@@ -1,0 +1,17 @@
+language: ruby
+dist: precise
+
+addons:
+  apt:
+    packages:
+    - shellcheck
+
+before_script:
+  - mkdir -p /tmp/local
+  - git clone https://github.com/bats-core/bats-core.git /tmp/bats
+  - cd /tmp/bats && ./install.sh /tmp/local
+  - export /tmp/local/bin
+
+script:
+  - test/shellcheck
+  - test/run_tests
