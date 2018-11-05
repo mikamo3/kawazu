@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+shellcheck -x --shell=bash bin/kawazu
+shellcheck --shell=bash lib/*.sh -e SC1117
