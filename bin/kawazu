@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+readonly KAWAZU_ROOT_DIR=${KAWAZU_ROOT_DIR:-$HOME/.kawazu/repos}
+readonly KAWAZU_DOTFILES_DIR=${KAWAZU_DOTFILES_DIR:-$HOME/.kawazu/dotfiles}
+
+# shellcheck source=lib/console.sh
+source "$KAWAZU_ROOT_DIR/lib/console.sh"
+
+main() {
+  :
+}
+main "$@"
