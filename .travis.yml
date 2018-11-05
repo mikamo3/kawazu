@@ -10,7 +10,7 @@ before_script:
   - mkdir -p /tmp/local
   - git clone https://github.com/bats-core/bats-core.git /tmp/bats
   - cd /tmp/bats && ./install.sh /tmp/local
-  - export /tmp/local/bin
+  - export PATH+=:/tmp/local/bin
 
 script:
   - test/shellcheck
