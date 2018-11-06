@@ -15,3 +15,6 @@ before_script:
 script:
   - test/shellcheck
   - test/run_tests
+
+notifications:
+  email: false
