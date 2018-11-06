@@ -9,7 +9,7 @@ addons:
 before_script:
   - mkdir -p /tmp/local
   - git clone https://github.com/bats-core/bats-core.git /tmp/bats
-  - cd /tmp/bats && ./install.sh /tmp/local
+  - /tmp/bats/install.sh /tmp/local
   - export PATH+=:/tmp/local/bin
 
 script:
