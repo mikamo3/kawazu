@@ -1,20 +1,30 @@
 #!/usr/bin/env/bats
 load ../helper
 setup(){
-    export_env
-    source ${KAWAZU_ROOT_DIR}/lib/console.sh
+  export_env
+  source ${KAWAZU_ROOT_DIR}/lib/console.sh
 }
-@test "output console error" {
-    result=$(print_error message)
-    [[ $result =~ "[✗] message" ]]
-}
-
-@test "output console success" {
-    result=$(print_success message)
-    [[ $result =~ "[✓] message" ]]
+@test "print_error" {
+  run print_error message
+  [[ $output =~ "[✗] message" ]]
 }
 
-@test "output console info" {
-    result=$(print_info message)
-    [[ $result =~ "[i] message" ]]
+@test "print_success" {
+  run print_success message
+  [[ $output =~ "[✓] message" ]]
+}
+
+@test "print_info" {
+run print_info message
+  [[ $output =~ "[i] message" ]]
+}
+
+@test "print_debug" {
+  run print_debug message
+  [[ $output =~ "[debug] message" ]]
+}
+
+@test "print_version" {
+  run print_version
+  [[ $output == "kawazu version 0.1" ]]
 }
