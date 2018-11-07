@@ -19,9 +19,16 @@ run print_info message
   [[ $output =~ "[i] message" ]]
 }
 
-@test "print_debug" {
+@test "print_debug with debug flg is true" {
+  export OPT_DEBUG=true
   run print_debug message
   [[ $output =~ "[debug] message" ]]
+}
+
+@test "print_debug with debug flg is false" {
+  export OPT_DEBUG=false
+  run print_debug message
+  [[ $output == "" ]]
 }
 
 @test "print_version" {

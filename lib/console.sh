@@ -20,7 +20,7 @@ print_info() {
   echo -e "${CL_CYAN}[i] $1${CL_RST}"
 }
 print_debug() {
-  echo -e "${CL_PURPLE}[debug] $1${CL_RST}"
+  [[ $OPT_DEBUG == "true" ]] && echo -e "${CL_PURPLE}[debug] $1${CL_RST}"
 }
 print_version() {
   echo "kawazu version $KAWAZU_VERSION"
