@@ -1,5 +1,6 @@
 #!/usr/bin/env bats
 load ../helper
+
 setup() {
   export_env
   source ${KAWAZU_ROOT_DIR}/lib/console.sh
@@ -9,6 +10,7 @@ setup() {
   touch "/tmp/abs_test_dir/a/b/c/d/test file"
   touch /tmp/abs_test_dir/a/b/testfile
 }
+
 teardown() {
   rm -rf /tmp/abs_test_dir
 }

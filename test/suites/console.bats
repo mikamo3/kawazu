@@ -1,9 +1,11 @@
 #!/usr/bin/env/bats
 load ../helper
+
 setup(){
   export_env
   source ${KAWAZU_ROOT_DIR}/lib/console.sh
 }
+
 @test "print_error" {
   run print_error message
   [[ $output =~ "[✗] message" ]]
