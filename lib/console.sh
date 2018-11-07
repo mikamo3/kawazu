@@ -25,3 +25,7 @@ print_debug() {
 print_version() {
   echo "kawazu version $KAWAZU_VERSION"
 }
+
+print_question() {
+  echo -en "${CL_YELLOW}[?] $1 ${CL_RST}"
+}

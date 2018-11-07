@@ -35,3 +35,8 @@ run print_info message
   run print_version
   [[ $output == "kawazu version 0.1" ]]
 }
+
+@test "print_question" {
+  run print_question message
+  [[ $output =~ "[?] message" ]]
+}
