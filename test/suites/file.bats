@@ -78,7 +78,7 @@ teardown() {
   [[ $status == 0 ]]
 }
 
-@test "get_abs_path ask rel path 5(dir)" {
+@test "get_abs_path ask rel path 6(dir)" {
   cd /tmp/abs_test_dir/a/b/c/d
   run get_abs_path ../../../../../../../
   [[ $output == / ]]
