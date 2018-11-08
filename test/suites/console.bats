@@ -1,5 +1,8 @@
-#!/usr/bin/env/bats
-load ../helper
+#!/usr/bin/env bats
+load ../helper/helper
+load ../helper/bats-support/load
+load ../helper/bats-assert/load
+load ../helper/bats-file/load
 
 setup(){
   export_env
@@ -8,37 +11,37 @@ setup(){
 
 @test "print_error" {
   run print_error message
-  [[ $output =~ "[✗] message" ]]
+  assert_output -p "[✗] message"
 }
 
 @test "print_success" {
   run print_success message
-  [[ $output =~ "[✓] message" ]]
+  assert_output -p "[✓] message"
 }
 
 @test "print_info" {
-run print_info message
-  [[ $output =~ "[i] message" ]]
+  run print_info message
+  assert_output -p "[i] message"
 }
 
 @test "print_debug with debug flg is true" {
   export OPT_DEBUG=true
   run print_debug message
-  [[ $output =~ "[debug] message" ]]
+  assert_output -p "[debug] message"
 }
 
 @test "print_debug with debug flg is false" {
   export OPT_DEBUG=false
   run print_debug message
-  [[ $output == "" ]]
+  assert_output -p ""
 }
 
 @test "print_version" {
   run print_version
-  [[ $output == "kawazu version 0.1" ]]
+  assert_output -p "kawazu version 0.1"
 }
 
 @test "print_question" {
   run print_question message
-  [[ $output =~ "[?] message" ]]
+  assert_output -p "[?] message"
 }
