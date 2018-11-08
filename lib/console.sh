@@ -27,5 +27,5 @@ print_version() {
 }
 
 print_question() {
-  echo -en "${CL_YELLOW}[?] $1 ${CL_RST}"
+  echo -en "${CL_YELLOW}[?] $1${CL_RST}"
 }
