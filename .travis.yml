@@ -5,6 +5,7 @@ addons:
   apt:
     packages:
     - shellcheck
+    - expect
 
 before_script:
   - mkdir -p /tmp/local
