@@ -7,12 +7,25 @@ export_env() {
   export KAWAZU_DOTFILES_DIR
   export KAWAZU_VERSION
 }
-
-delete_dotfiles_dir() {
+create_dotfiles_git_repository() {
+  (mkdir -p "$KAWAZU_DOTFILES_DIR" && cd "$KAWAZU_DOTFILES_DIR" && git init)
+}
+delete_dotfiles_git_repository() {
   rm -rf "$KAWAZU_DOTFILES_DIR"
 }
 
 is_git_repository() {
   (cd "$1" && git rev-parse --is-inside-work-tree)
   return $?
+}
+
+create_local_git_bare_repository() {
+  local_git_repository_path=/tmp/git_repos.git
+  mkdir -p "$local_git_repository_path"
+  (cd $local_git_repository_path && git init --bare)
+}
+
+delete_local_git_bare_repository() {
+  local_git_repository_path=/tmp/git_repos.git
+  rm -rf "$local_git_repository_path"
 }

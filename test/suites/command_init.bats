@@ -9,11 +9,11 @@ setup() {
   source ${KAWAZU_ROOT_DIR}/lib/console.sh
   source ${KAWAZU_ROOT_DIR}/lib/file.sh
   source ${KAWAZU_ROOT_DIR}/lib/command_init.sh
-  delete_dotfiles_dir
+  delete_dotfiles_git_repository
 }
 
 teardown() {
-  delete_dotfiles_dir
+  delete_dotfiles_git_repository
 }
 
 @test "init when dotfiles directory does not exists" {
@@ -40,7 +40,7 @@ teardown() {
 
 @test "init when dotfiles directory already managed by git" {
   mkdir -p /tmp/.dotfiles/
-  (cd /tmp/.dotfiles/ && git init)
+  create_dotfiles_git_repository
   run init
   assert_success
   assert_output -p "[i] /tmp/.dotfiles is already managed by git"
