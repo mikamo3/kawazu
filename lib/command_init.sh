@@ -4,11 +4,12 @@
 # when repository directory is already exists
 #
 init() {
+  #TODO: add param branch If branch is set in the parameter, switch the branch after initialization
   local target_repository=$KAWAZU_DOTFILES_DIR
   [[ ! -e $target_repository ]] && mkd "$target_repository"
 
   # check target directory is already managed by git
-  if (cd "$target_repository" && ! git status &>/dev/null); then
+  if (cd "$target_repository" && ! git rev-parse --is-inside-work-tree &>/dev/null); then
     print_debug "$target_repository is not managed by git. So manage it"
     result=$(cd "$target_repository" &&
       git init 2>&1 &&
