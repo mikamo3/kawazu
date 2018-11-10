@@ -11,3 +11,8 @@ export_env() {
 delete_dotfiles_dir() {
   rm -rf "$KAWAZU_DOTFILES_DIR"
 }
+
+is_git_repository() {
+  (cd "$1" && git rev-parse --is-inside-work-tree)
+  return $?
+}
