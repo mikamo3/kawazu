@@ -132,6 +132,12 @@ teardown() {
   assert_failure
 }
 
+@test "get_abs_path ask path pattern * " {
+  cd /tmp/test_dir/a/b/c/d
+  run get_abs_path "*"
+  assert_output -p "[✗] get_abs_path : /tmp/test_dir/a/b/c/d/* does not exists"
+}
+
 @test "mkd with no args" {
   run mkd
   assert_output -p "[✗] mkd : need target_path"
