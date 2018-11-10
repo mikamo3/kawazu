@@ -29,3 +29,9 @@ delete_local_git_bare_repository() {
   local_git_repository_path=/tmp/git_repos.git
   rm -rf "$local_git_repository_path"
 }
+
+get_current_branch() {
+  local branch
+  branch=$(cd "$KAWAZU_DOTFILES_DIR" && git branch | grep "^\* ")
+  echo "${branch#* }"
+}
