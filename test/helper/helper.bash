@@ -3,12 +3,28 @@ export_env() {
   KAWAZU_ROOT_DIR="$BATS_TEST_DIRNAME/../.."
   KAWAZU_DOTFILES_DIR="/tmp/.dotfiles"
   KAWAZU_VERSION="0.1"
+  HOME=/tmp/home
+  OPT_DEBUG=true
   export KAWAZU_ROOT_DIR
   export KAWAZU_DOTFILES_DIR
   export KAWAZU_VERSION
+  export OPT_DEBUG
 }
+
+create_home_directory() {
+  mkdir -p $HOME
+}
+
+delete_home_directory() {
+  rm -rf $HOME
+}
+
 create_dotfiles_git_repository() {
-  (mkdir -p "$KAWAZU_DOTFILES_DIR" && cd "$KAWAZU_DOTFILES_DIR" && git init)
+  (mkdir -p "$KAWAZU_DOTFILES_DIR" &&
+    cd "$KAWAZU_DOTFILES_DIR" &&
+    git init &&
+    git config user.name "test" &&
+    git config user.email "test@example.com")
 }
 delete_dotfiles_git_repository() {
   rm -rf "$KAWAZU_DOTFILES_DIR"
