@@ -56,3 +56,35 @@ get_abs_path() {
   fi
   echo "$dir$base"
 }
+
+get_symlink_abs_path() {
+  if [[ $# == 0 ]]; then
+    print_error "${FUNCNAME[0]} : need target_path"
+    return 1
+  elif [[ $# -gt 1 ]]; then
+    print_error "${FUNCNAME[0]} : too many arguments"
+    return 1
+  fi
+
+  local target_path=$1
+  local target_abs_path
+  local target_symlink_path
+
+  if [[ ! -e $target_path ]]; then
+    print_error "${FUNCNAME[0]} : $target_path does not exists"
+    return 1
+  fi
+
+  if [[ ! -L $target_path ]]; then
+    print_error "${FUNCNAME[0]} : $target_path is not symbolic link"
+    return 1
+  fi
+  target_symlink_path=$(readlink "$target_path")
+  if [[ $target_symlink_path =~ ^/.* ]]; then
+    echo "$target_symlink_path"
+    return 0
+  fi
+  target_abs_path=$(get_abs_path "$target_path")
+  [[ ! -d $target_abs_path ]] && target_abs_path=$(dirname "$target_abs_path")
+  get_abs_path "${target_abs_path}/$(readlink "$target_path")"
+}
