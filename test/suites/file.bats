@@ -12,6 +12,8 @@ setup() {
   touch /tmp/test_dir/a/b/c/d/testfile
   touch "/tmp/test_dir/a/b/c/d/test file"
   touch /tmp/test_dir/a/b/testfile
+  ln -s /tmp/test_dir/a/b/testfile /tmp/test_dir/a/b/c/d/symlink_testfile
+  ln -s deadlink /tmp/test_dir/a/b/c/d/deadlink
 }
 
 teardown() {
@@ -136,8 +138,22 @@ teardown() {
   cd /tmp/test_dir/a/b/c/d
   run get_abs_path "*"
   assert_output -p "[✗] get_abs_path : /tmp/test_dir/a/b/c/d/* does not exists"
+  assert_failure
 }
 
+@test "get_abs_path ask symlink" {
+  cd /tmp/test_dir/a/b
+  run get_abs_path c/d/symlink_testfile
+  assert_output "/tmp/test_dir/a/b/c/d/symlink_testfile"
+  assert_success
+}
+
+@test "get_abs_path ask symlink is broken" {
+  cd /tmp/test_dir/a/b/c
+  run get_abs_path "d/deadlink"
+  assert_output "/tmp/test_dir/a/b/c/d/deadlink"
+  assert_success
+}
 @test "mkd with no args" {
   run mkd
   assert_output -p "[✗] mkd : need target_path"
