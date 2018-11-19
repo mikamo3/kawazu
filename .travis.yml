@@ -1,11 +1,15 @@
 language: ruby
 dist: trusty
+branches:
+  only:
+    - master
+    - develop
 
 addons:
   apt:
     packages:
-    - shellcheck
-    - expect
+      - shellcheck
+      - expect
 
 before_script:
   - mkdir -p /tmp/local
