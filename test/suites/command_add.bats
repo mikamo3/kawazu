@@ -10,15 +10,15 @@ setup() {
   source ${KAWAZU_ROOT_DIR}/lib/file.sh
   source ${KAWAZU_ROOT_DIR}/lib/interactive.sh
   source ${KAWAZU_ROOT_DIR}/lib/command_add.sh
+  create_test_directory
   create_dotfiles_git_repository
-  create_home_directory
 
   #set homedir
   cd $HOME
   touch testfile
   mkdir test_dir
   touch test_dir/testfile
-  touch /tmp/testfile
+  touch $TEST_WORK_DIR/testfile
   ln -s deadlink
   ln -s testfile sym_testfile
 
@@ -32,8 +32,7 @@ setup() {
 
 teardown() {
   delete_dotfiles_git_repository
-  delete_home_directory
-  rm /tmp/testfile
+  delete_test_directory
 }
 
 @test "command_add with no args" {
@@ -45,14 +44,14 @@ teardown() {
 @test "command_add when dotfiles repository does not found" {
   delete_dotfiles_git_repository
   run command_add testfile
-  assert_output -p "[✗] /tmp/.dotfiles does not exist"
+  assert_output -p "[✗] /tmp/test/.dotfiles does not exist"
   assert_failure
 }
 
 @test "command_add when dotfiles is not git repository" {
   rm -rf $KAWAZU_DOTFILES_DIR/.git
   run command_add testfile
-  assert_output -p "[✗] /tmp/.dotfiles is not git repository"
+  assert_output -p "[✗] /tmp/test/.dotfiles is not git repository"
   assert_failure
 }
 
@@ -69,7 +68,7 @@ teardown() {
 }
 
 @test "command_add when target file is not included home directory" {
-  cd /tmp
+  cd /tmp/test
   run command_add testfile
   assert_output -p "[✗] testfile must be in your home directory"
   assert_failure
@@ -85,7 +84,7 @@ teardown() {
 
 @test "command_add when target file is symlink and already managed by git (rel path)" {
   (cd $KAWAZU_DOTFILES_DIR && touch testfile && git add testfile && git commit -m "test")
-  ln -sf ../../$KAWAZU_DOTFILES_DIR/testfile testfile
+  ln -sf ../../.dotfiles/testfile testfile
   run command_add testfile
   assert_output -p "[i] testfile is already managed by git. skip"
   assert_failure
@@ -93,43 +92,43 @@ teardown() {
 
 @test "command_add no managed file (cur dir is home)" {
   run command_add testfile
-  assert_line -n 0 -p "[i] add testfile → /tmp/.dotfiles/testfile"
-  assert_line -n 1 -p "[✓] add complete testfile → /tmp/.dotfiles/testfile"
-  assert $(cd /tmp/.dotfile && git status -s && grep "^A  testfile$")
+  assert_line -n 0 -p "[i] add testfile → /tmp/test/.dotfiles/testfile"
+  assert_line -n 1 -p "[✓] add complete testfile → /tmp/test/.dotfiles/testfile"
+  assert $(cd /tmp/test/.dotfile && git status -s && grep "^A  testfile$")
   assert_success
 }
 
 @test "command_add no managed file (cur dir is home/test_dir)" {
   cd test_dir
   run command_add ../testfile
-  assert_line -n 0 -p "[i] add ../testfile → /tmp/.dotfiles/testfile"
-  assert_line -n 1 -p "[✓] add complete ../testfile → /tmp/.dotfiles/testfile"
-  assert $(cd /tmp/.dotfile && git status -s && grep "^A  testfile$")
+  assert_line -n 0 -p "[i] add ../testfile → /tmp/test/.dotfiles/testfile"
+  assert_line -n 1 -p "[✓] add complete ../testfile → /tmp/test/.dotfiles/testfile"
+  assert $(cd /tmp/test/.dotfile && git status -s && grep "^A  testfile$")
   assert_success
 }
 
 @test "command_add no managed file with dir (cur dir is home)" {
   run command_add test_dir/testfile
-  assert_line -n 0 -p "[i] add test_dir/testfile → /tmp/.dotfiles/test_dir/testfile"
-  assert_line -n 1 -p "[✓] add complete test_dir/testfile → /tmp/.dotfiles/test_dir/testfile"
-  assert $(cd /tmp/.dotfile && git status -s && grep "^A  test_dir/testfile$")
+  assert_line -n 0 -p "[i] add test_dir/testfile → /tmp/test/.dotfiles/test_dir/testfile"
+  assert_line -n 1 -p "[✓] add complete test_dir/testfile → /tmp/test/.dotfiles/test_dir/testfile"
+  assert $(cd /tmp/test/.dotfile && git status -s && grep "^A  test_dir/testfile$")
   assert_success
 }
 
 @test "command_add no managed file with dir (cur dir is home/test_dir)" {
   cd test_dir
   run command_add testfile
-  assert_line -n 0 -p "[i] add testfile → /tmp/.dotfiles/test_dir/testfile"
-  assert_line -n 1 -p "[✓] add complete testfile → /tmp/.dotfiles/test_dir/testfile"
-  assert $(cd /tmp/.dotfile && git status -s && grep "^A  test_dir/testfile$")
+  assert_line -n 0 -p "[i] add testfile → /tmp/test/.dotfiles/test_dir/testfile"
+  assert_line -n 1 -p "[✓] add complete testfile → /tmp/test/.dotfiles/test_dir/testfile"
+  assert $(cd /tmp/test/.dotfile && git status -s && grep "^A  test_dir/testfile$")
   assert_success
 }
 
 @test "command_add target file is link" {
   run command_add sym_testfile
-  assert_line -n 0 -p "[i] add sym_testfile → /tmp/.dotfiles/sym_testfile"
-  assert_line -n 1 -p "[✓] add complete sym_testfile → /tmp/.dotfiles/sym_testfile"
-  assert $(cd /tmp/.dotfile && git status -s && grep "^A  sym_testfile$")
+  assert_line -n 0 -p "[i] add sym_testfile → /tmp/test/.dotfiles/sym_testfile"
+  assert_line -n 1 -p "[✓] add complete sym_testfile → /tmp/test/.dotfiles/sym_testfile"
+  assert $(cd /tmp/test/.dotfile && git status -s && grep "^A  sym_testfile$")
   assert_success
 }
 @test "command_add when target file is broken link" {
@@ -149,7 +148,7 @@ teardown() {
     send  "source ${KAWAZU_ROOT_DIR}/lib/file.sh\n"
     send "source ${KAWAZU_ROOT_DIR}/lib/command_add.sh\n"
     send "command_add testfile\n"
-    expect -ex "$expect_interactive_header /tmp/.dotfiles/testfile is already exist. do you want to overwrite? (y/n) : " {} default {exit 1}
+    expect -ex "$expect_interactive_header /tmp/test/.dotfiles/testfile is already exist. do you want to overwrite? (y/n) : " {} default {exit 1}
     send "n"
     expect -re "$expect_prompt" {} default {exit 1}
     send "echo \\\$\?\n"
@@ -170,9 +169,9 @@ EOF
     send  "source ${KAWAZU_ROOT_DIR}/lib/file.sh\n"
     send "source ${KAWAZU_ROOT_DIR}/lib/command_add.sh\n"
     send "command_add testfile\n"
-    expect -ex "$expect_interactive_header /tmp/.dotfiles/testfile is already exist. do you want to overwrite? (y/n) : " {} default {exit 1}
+    expect -ex "$expect_interactive_header /tmp/test/.dotfiles/testfile is already exist. do you want to overwrite? (y/n) : " {} default {exit 1}
     send "y"
-    expect -ex "$expect_success_header add complete testfile → /tmp/.dotfiles/testfile" {} default {exit 1}
+    expect -ex "$expect_success_header add complete testfile → /tmp/test/.dotfiles/testfile" {} default {exit 1}
     expect -re "$expect_prompt" {} default {exit 1}
     send "echo \\\$\?\n"
     expect -ex "\r\n0\r\n" {send "exit\n";exit 0} default {exit 1}

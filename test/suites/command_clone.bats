@@ -28,13 +28,13 @@ teardown() {
 @test "clone from local git repository when target directory is already managed git" {
   create_dotfiles_git_repository
   run clone "$local_git_repository_path"
-  assert_output -p "[i] /tmp/.dotfiles is already managed by git. skip"
+  assert_output -p "[i] /tmp/test/.dotfiles is already managed by git. skip"
   assert_success
 }
 
 @test "clone from local git repository when target directory does not exist" {
   run clone "$local_git_repository_path"
-  assert_output -p "[✓] clone : /tmp/git_repos.git to /tmp/.dotfiles"
+  assert_output -p "[✓] clone : /tmp/test/git_repos.git to /tmp/test/.dotfiles"
   assert_success
 }
 
@@ -46,18 +46,18 @@ teardown() {
 
 @test "clone form github with https protocol" {
   run clone https://github.com/mikamo3/test_repos.git
-  assert_output -p "[✓] clone : https://github.com/mikamo3/test_repos.git to /tmp/.dotfiles"
+  assert_output -p "[✓] clone : https://github.com/mikamo3/test_repos.git to /tmp/test/.dotfiles"
   branch=$(get_current_branch)
-  assert $(is_git_repository /tmp/.dotfiles)
+  assert $(is_git_repository /tmp/test/.dotfiles)
   assert_equal "$branch" "master"
   assert_success
 }
 
 @test "clone and switch exist branch" {
   run clone https://github.com/mikamo3/test_repos.git develop
-  assert_output -p "[✓] clone : https://github.com/mikamo3/test_repos.git to /tmp/.dotfiles"
+  assert_output -p "[✓] clone : https://github.com/mikamo3/test_repos.git to /tmp/test/.dotfiles"
   assert_output -p "[✓] swith to branch develop"
-  assert $(is_git_repository /tmp/.dotfiles)
+  assert $(is_git_repository /tmp/test/.dotfiles)
   branch=$(get_current_branch)
   assert_equal "$branch" "develop"
   assert_success
@@ -65,9 +65,9 @@ teardown() {
 
 @test "clone and switch not exist branch" {
   run clone https://github.com/mikamo3/test_repos.git not_exist_branch
-  assert_output -p "[✓] clone : https://github.com/mikamo3/test_repos.git to /tmp/.dotfiles"
+  assert_output -p "[✓] clone : https://github.com/mikamo3/test_repos.git to /tmp/test/.dotfiles"
   assert_output -p "[✓] swith to branch not_exist_branch"
-  assert $(is_git_repository /tmp/.dotfiles)
+  assert $(is_git_repository /tmp/test/.dotfiles)
   branch=$(get_current_branch)
   assert_equal "$branch" "not_exist_branch"
 }

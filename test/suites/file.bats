@@ -8,18 +8,18 @@ setup() {
   export_env
   source ${KAWAZU_ROOT_DIR}/lib/console.sh
   source ${KAWAZU_ROOT_DIR}/lib/file.sh
-  mkdir -p /tmp/test_dir/a/b/c/d
-  touch /tmp/test_dir/a/b/c/d/testfile
-  touch "/tmp/test_dir/a/b/c/d/test file"
-  touch /tmp/test_dir/a/b/testfile
-  ln -s /tmp/test_dir/a/b/testfile /tmp/test_dir/a/b/c/d/symlink_testfile
-  ln -s deadlink /tmp/test_dir/a/b/c/d/deadlink
-  ln -s /tmp/test_dir/a/b/testfile /tmp/test_dir/a/b/c/abs_sym_testfile
-  (cd /tmp/test_dir/a/b/c && ln -s ../testfile rel_sym_testfile)
+  mkdir -p /tmp/test/a/b/c/d
+  touch /tmp/test/a/b/c/d/testfile
+  touch "/tmp/test/a/b/c/d/test file"
+  touch /tmp/test/a/b/testfile
+  ln -s /tmp/test/a/b/testfile /tmp/test/a/b/c/d/symlink_testfile
+  ln -s deadlink /tmp/test/a/b/c/d/deadlink
+  ln -s /tmp/test/a/b/testfile /tmp/test/a/b/c/abs_sym_testfile
+  (cd /tmp/test/a/b/c && ln -s ../testfile rel_sym_testfile)
 }
 
 teardown() {
-  rm -rf /tmp/test_dir
+  rm -rf /tmp/test
 }
 
 @test "get_abs_path with no args" {
@@ -35,125 +35,125 @@ teardown() {
 }
 
 @test "get_abs_path absolute path(dir)" {
-  run get_abs_path /tmp/test_dir/a/b/c/d/
-  assert_output /tmp/test_dir/a/b/c/d
+  run get_abs_path /tmp/test/a/b/c/d/
+  assert_output /tmp/test/a/b/c/d
   assert_success
 }
 
 @test "get_abs_path absolute path(file)" {
-  run get_abs_path /tmp/test_dir/a/b/c/d/testfile
-  assert_output /tmp/test_dir/a/b/c/d/testfile
+  run get_abs_path /tmp/test/a/b/c/d/testfile
+  assert_output /tmp/test/a/b/c/d/testfile
   assert_success
 }
 
 @test "get_abs_path absolute path(file with space)" {
-  run get_abs_path "/tmp/test_dir/a/b/c/d/test file"
-  assert_output "/tmp/test_dir/a/b/c/d/test file"
+  run get_abs_path "/tmp/test/a/b/c/d/test file"
+  assert_output "/tmp/test/a/b/c/d/test file"
   assert_success
 }
 
 @test "get_abs_path rel path 1(dir)" {
-  cd /tmp/test_dir/a/b/
+  cd /tmp/test/a/b/
   run get_abs_path c/d/
-  assert_output /tmp/test_dir/a/b/c/d
+  assert_output /tmp/test/a/b/c/d
   assert_success
 }
 
 @test "get_abs_path rel path 2(dir)" {
-  cd /tmp/test_dir/a/b/
+  cd /tmp/test/a/b/
   run get_abs_path c/../../b/c/d/
-  assert_output /tmp/test_dir/a/b/c/d
+  assert_output /tmp/test/a/b/c/d
   assert_success
 }
 
 @test "get_abs_path rel path 3(dir)" {
-  cd /tmp/test_dir/a/b/c/d
+  cd /tmp/test/a/b/c/d
   run get_abs_path .
-  assert_output /tmp/test_dir/a/b/c/d
+  assert_output /tmp/test/a/b/c/d
   assert_success
 }
 
 @test "get_abs_path rel path 4(dir)" {
-  cd /tmp/test_dir/a/b/c/d
+  cd /tmp/test/a/b/c/d
   run get_abs_path ..
-  assert_output /tmp/test_dir/a/b/c
+  assert_output /tmp/test/a/b/c
   assert_success
 }
 
 @test "get_abs_path rel path 5(dir)" {
-  cd /tmp/test_dir/a/b/c/d
+  cd /tmp/test/a/b/c/d
   run get_abs_path ../
-  assert_output /tmp/test_dir/a/b/c
+  assert_output /tmp/test/a/b/c
   assert_success
 }
 
 @test "get_abs_path rel path 6(dir)" {
-  cd /tmp/test_dir/a/b/c/d
+  cd /tmp/test/a/b/c/d
   run get_abs_path ../../../../../../../
   assert_output /
   assert_success
 }
 
 @test "get_abs_path rel path 1(file)" {
-  cd /tmp/test_dir/a/b/
+  cd /tmp/test/a/b/
   run get_abs_path c/d/testfile
-  assert_output /tmp/test_dir/a/b/c/d/testfile
+  assert_output /tmp/test/a/b/c/d/testfile
   assert_success
 }
 
 @test "get_abs_path rel path 2(file)" {
-  cd /tmp/test_dir/a/b/
+  cd /tmp/test/a/b/
   run get_abs_path c/../../b/c/d/testfile
-  assert_output /tmp/test_dir/a/b/c/d/testfile
+  assert_output /tmp/test/a/b/c/d/testfile
   assert_success
 }
 
 @test "get_abs_path rel path 3(file)" {
-  cd /tmp/test_dir/a/b/c/d
+  cd /tmp/test/a/b/c/d
   run get_abs_path ./testfile
-  assert_output /tmp/test_dir/a/b/c/d/testfile
+  assert_output /tmp/test/a/b/c/d/testfile
   assert_success
 }
 
 @test "get_abs_path rel path 4(file)" {
-  cd /tmp/test_dir/a/b/c/d
+  cd /tmp/test/a/b/c/d
   run get_abs_path ../../testfile
-  assert_output /tmp/test_dir/a/b/testfile
+  assert_output /tmp/test/a/b/testfile
   assert_success
 }
 
 @test "get_abs_path when file not exist 1" {
-  cd /tmp/test_dir/a/b/c/d
+  cd /tmp/test/a/b/c/d
   run get_abs_path file_not_exist
-  assert_output -p "[✗] get_abs_path : /tmp/test_dir/a/b/c/d/file_not_exist does not exists"
+  assert_output -p "[✗] get_abs_path : /tmp/test/a/b/c/d/file_not_exist does not exists"
   assert_failure
 }
 
 @test "get_abs_path when file not exist 2" {
-  cd /tmp/test_dir/a/b/c/d
+  cd /tmp/test/a/b/c/d
   run get_abs_path ../../file_not_exist
-  assert_output -p "[✗] get_abs_path : /tmp/test_dir/a/b/file_not_exist does not exists"
+  assert_output -p "[✗] get_abs_path : /tmp/test/a/b/file_not_exist does not exists"
   assert_failure
 }
 
 @test "get_abs_path ask path pattern * " {
-  cd /tmp/test_dir/a/b/c/d
+  cd /tmp/test/a/b/c/d
   run get_abs_path "*"
-  assert_output -p "[✗] get_abs_path : /tmp/test_dir/a/b/c/d/* does not exists"
+  assert_output -p "[✗] get_abs_path : /tmp/test/a/b/c/d/* does not exists"
   assert_failure
 }
 
 @test "get_abs_path ask symlink" {
-  cd /tmp/test_dir/a/b
+  cd /tmp/test/a/b
   run get_abs_path c/d/symlink_testfile
-  assert_output "/tmp/test_dir/a/b/c/d/symlink_testfile"
+  assert_output "/tmp/test/a/b/c/d/symlink_testfile"
   assert_success
 }
 
 @test "get_abs_path ask symlink is broken" {
-  cd /tmp/test_dir/a/b/c
+  cd /tmp/test/a/b/c
   run get_abs_path "d/deadlink"
-  assert_output "/tmp/test_dir/a/b/c/d/deadlink"
+  assert_output "/tmp/test/a/b/c/d/deadlink"
   assert_success
 }
 @test "mkd with no args" {
@@ -169,27 +169,27 @@ teardown() {
 }
 
 @test "mkd create directory from relative path" {
-  cd /tmp/test_dir/a/b/c/d
+  cd /tmp/test/a/b/c/d
   run mkd ../../e
   assert_output -p "[✓] create directory : ../../e"
   assert_success
 }
 
 @test "mkd create directory from absolute path" {
-  run mkd /tmp/test_dir/a/b/c/d/e
-  assert_output -p "[✓] create directory : /tmp/test_dir/a/b/c/d/e"
+  run mkd /tmp/test/a/b/c/d/e
+  assert_output -p "[✓] create directory : /tmp/test/a/b/c/d/e"
   assert_success
 }
 
 @test "mkd when directory already exists" {
-  run mkd /tmp/test_dir/a/b/c/d
+  run mkd /tmp/test/a/b/c/d
   assert_output -p "[i] directory already exists"
   assert_success
 }
 
 @test "mkd when file already exists" {
-  run mkd /tmp/test_dir/a/b/c/d/testfile
-  assert_output -p "[✗] mkd : file with the same name already exists : /tmp/test_dir/a/b/c/d/testfile"
+  run mkd /tmp/test/a/b/c/d/testfile
+  assert_output -p "[✗] mkd : file with the same name already exists : /tmp/test/a/b/c/d/testfile"
   assert_failure
 }
 
@@ -218,47 +218,47 @@ teardown() {
 }
 
 @test "get_symlink_abs_path when file is not symlink" {
-  run get_symlink_abs_path /tmp/test_dir/a/b/c/d/testfile
-  assert_output -p "[✗] get_symlink_abs_path : /tmp/test_dir/a/b/c/d/testfile is not symbolic link"
+  run get_symlink_abs_path /tmp/test/a/b/c/d/testfile
+  assert_output -p "[✗] get_symlink_abs_path : /tmp/test/a/b/c/d/testfile is not symbolic link"
   assert_failure
 }
 
 @test "get_symlink_abs_path get abs path symlink 1" {
-  run get_symlink_abs_path /tmp/test_dir/a/b/c/abs_sym_testfile
-  assert_output "/tmp/test_dir/a/b/testfile"
+  run get_symlink_abs_path /tmp/test/a/b/c/abs_sym_testfile
+  assert_output "/tmp/test/a/b/testfile"
   assert_success
 }
 
 @test "get_symlink_abs_path get abs path symlink 2" {
-  cd /tmp/test_dir/a/b/c/d
+  cd /tmp/test/a/b/c/d
   run get_symlink_abs_path ../abs_sym_testfile
-  assert_output "/tmp/test_dir/a/b/testfile"
+  assert_output "/tmp/test/a/b/testfile"
   assert_success
 }
 
 @test "get_symlink_abs_path get abs path symlink 3" {
-  cd /tmp/test_dir/a/b/
+  cd /tmp/test/a/b/
   run get_symlink_abs_path c/abs_sym_testfile
-  assert_output "/tmp/test_dir/a/b/testfile"
+  assert_output "/tmp/test/a/b/testfile"
   assert_success
 }
 
 @test "get_symlink_abs_path get rel path symlink 1" {
-  run get_symlink_abs_path /tmp/test_dir/a/b/c/rel_sym_testfile
-  assert_output "/tmp/test_dir/a/b/testfile"
+  run get_symlink_abs_path /tmp/test/a/b/c/rel_sym_testfile
+  assert_output "/tmp/test/a/b/testfile"
   assert_success
 }
 
 @test "get_symlink_abs_path get rel path symlink 2" {
-  cd /tmp/test_dir/a/b/c/d
+  cd /tmp/test/a/b/c/d
   run get_symlink_abs_path ../rel_sym_testfile
-  assert_output "/tmp/test_dir/a/b/testfile"
+  assert_output "/tmp/test/a/b/testfile"
   assert_success
 }
 
 @test "get_symlink_abs_path get rel path symlink 3" {
-  cd /tmp/test_dir/a/b
+  cd /tmp/test/a/b
   run get_symlink_abs_path c/rel_sym_testfile
-  assert_output "/tmp/test_dir/a/b/testfile"
+  assert_output "/tmp/test/a/b/testfile"
   assert_success
 }
