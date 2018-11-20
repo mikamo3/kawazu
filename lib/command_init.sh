@@ -10,10 +10,9 @@ init() {
 
   # check target directory is already managed by git
   if (cd "$target_repository" && ! git rev-parse --is-inside-work-tree &>/dev/null); then
-    print_debug "$target_repository is not managed by git. So manage it"
-    result=$(cd "$target_repository" &&
-      git init 2>&1 &&
-      touch .gitignore
+    result=$(cd "$target_repository" \
+      && git init 2>&1 \
+      && touch .gitignore
     ) || {
       print_error "$result"
       return 1
