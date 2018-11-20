@@ -18,9 +18,10 @@ env:
   - BASH_VAR=4.3
   - BASH_VAR=4.4
 before_script:
-  - ./docker.sh
+  - docker build ./ -t kawazu_bash_$BASH_VAR
 
 script:
-  - docker run --rm kawazu_bash_$BASH_VAR
+  - docker run --rm kawazu_bash_$BASH_VAR /tmp/kawazu/test/run_tests
+  - docker run --rm kawazu_bash_$BASH_VAR /tmp/kawazu/test/shellcheck
 notifications:
   email: never
