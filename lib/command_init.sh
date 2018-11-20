@@ -6,7 +6,7 @@
 init() {
   #TODO: add param branch If branch is set in the parameter, switch the branch after initialization
   local target_repository=$KAWAZU_DOTFILES_DIR
-  [[ ! -e $target_repository ]] && mkd "$target_repository"
+  [[ ! -e $target_repository ]] && mkdir -p "$target_repository"
 
   # check target directory is already managed by git
   if (cd "$target_repository" && ! git rev-parse --is-inside-work-tree &>/dev/null); then
