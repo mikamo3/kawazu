@@ -1,25 +1,26 @@
-language: ruby
+language: bash
+sudo: required
+
+services:
+  - docker
+
 dist: trusty
 branches:
   only:
     - master
     - develop
 
-addons:
-  apt:
-    packages:
-      - shellcheck
-      - expect
-
+env:
+  - BASH_VAR=3.2
+  - BASH_VAR=4.0
+  - BASH_VAR=4.1
+  - BASH_VAR=4.2
+  - BASH_VAR=4.3
+  - BASH_VAR=4.4
 before_script:
-  - mkdir -p /tmp/local
-  - git clone https://github.com/bats-core/bats-core.git /tmp/bats
-  - /tmp/bats/install.sh /tmp/local
-  - export PATH+=:/tmp/local/bin
+  - ./docker.sh
 
 script:
-  - test/shellcheck
-  - test/run_tests
-
+  - docker run --rm kawazu_bash_$BASH_VAR
 notifications:
-  email: false
+  email: never
