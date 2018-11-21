@@ -8,18 +8,14 @@ setup() {
   export_env
   source ${KAWAZU_ROOT_DIR}/lib/console.sh
   source ${KAWAZU_ROOT_DIR}/lib/file.sh
-  mkdir -p /tmp/test/a/b/c/d
-  touch /tmp/test/a/b/c/d/testfile
-  touch "/tmp/test/a/b/c/d/test file"
-  touch /tmp/test/a/b/testfile
-  ln -s /tmp/test/a/b/testfile /tmp/test/a/b/c/d/symlink_testfile
-  ln -s deadlink /tmp/test/a/b/c/d/deadlink
-  ln -s /tmp/test/a/b/testfile /tmp/test/a/b/c/abs_sym_testfile
-  (cd /tmp/test/a/b/c && ln -s ../testfile rel_sym_testfile)
+
+  create_test_directory
+  create_test_files
+  cd "$TEST_WORK_DIR"
 }
 
 teardown() {
-  rm -rf /tmp/test
+  delete_test_directory
 }
 
 @test "get_abs_path with no args" {
@@ -34,125 +30,201 @@ teardown() {
   assert_failure
 }
 
-@test "get_abs_path absolute path(dir)" {
-  run get_abs_path /tmp/test/a/b/c/d/
-  assert_output /tmp/test/a/b/c/d
+@test "get_abs_path abs path(dir)" {
+  run get_abs_path "$TEST_WORK_DIR/path/to/dir"
+  assert_output "$TEST_WORK_DIR/path/to/dir"
   assert_success
 }
 
-@test "get_abs_path absolute path(file)" {
-  run get_abs_path /tmp/test/a/b/c/d/testfile
-  assert_output /tmp/test/a/b/c/d/testfile
+@test "get_abs_path abs path(file)" {
+  run get_abs_path "$TEST_WORK_DIR/path/to/dir/file"
+  assert_output "$TEST_WORK_DIR/path/to/dir/file"
   assert_success
 }
 
-@test "get_abs_path absolute path(file with space)" {
-  run get_abs_path "/tmp/test/a/b/c/d/test file"
-  assert_output "/tmp/test/a/b/c/d/test file"
+@test "get_abs_path abs path(file name is contain space)" {
+  run get_abs_path "$TEST_WORK_DIR/path/to/dir/file space"
+  assert_output "$TEST_WORK_DIR/path/to/dir/file space"
   assert_success
 }
 
 @test "get_abs_path rel path 1(dir)" {
-  cd /tmp/test/a/b/
-  run get_abs_path c/d/
-  assert_output /tmp/test/a/b/c/d
+  cd path
+  run get_abs_path to/dir
+  assert_output "$TEST_WORK_DIR/path/to/dir"
   assert_success
 }
 
 @test "get_abs_path rel path 2(dir)" {
-  cd /tmp/test/a/b/
-  run get_abs_path c/../../b/c/d/
-  assert_output /tmp/test/a/b/c/d
+  cd path/to
+  run get_abs_path dir/../../to/dir
+  assert_output "$TEST_WORK_DIR/path/to/dir"
   assert_success
 }
 
 @test "get_abs_path rel path 3(dir)" {
-  cd /tmp/test/a/b/c/d
+  cd path/to/dir
   run get_abs_path .
-  assert_output /tmp/test/a/b/c/d
+  assert_output "$TEST_WORK_DIR/path/to/dir"
   assert_success
 }
 
 @test "get_abs_path rel path 4(dir)" {
-  cd /tmp/test/a/b/c/d
+  cd path/to/dir
   run get_abs_path ..
-  assert_output /tmp/test/a/b/c
+  assert_output "$TEST_WORK_DIR/path/to"
   assert_success
 }
 
 @test "get_abs_path rel path 5(dir)" {
-  cd /tmp/test/a/b/c/d
+  cd "$TEST_WORK_DIR/path/to/dir"
   run get_abs_path ../
-  assert_output /tmp/test/a/b/c
+  assert_output "$TEST_WORK_DIR/path/to"
   assert_success
 }
 
 @test "get_abs_path rel path 6(dir)" {
-  cd /tmp/test/a/b/c/d
+  cd "$TEST_WORK_DIR/path/to/dir"
   run get_abs_path ../../../../../../../
   assert_output /
   assert_success
 }
+#TODO: dir newline
 
 @test "get_abs_path rel path 1(file)" {
-  cd /tmp/test/a/b/
-  run get_abs_path c/d/testfile
-  assert_output /tmp/test/a/b/c/d/testfile
+  cd "$TEST_WORK_DIR/path/to"
+  run get_abs_path dir/file
+  assert_output "$TEST_WORK_DIR/path/to/dir/file"
   assert_success
 }
 
 @test "get_abs_path rel path 2(file)" {
-  cd /tmp/test/a/b/
-  run get_abs_path c/../../b/c/d/testfile
-  assert_output /tmp/test/a/b/c/d/testfile
+  cd "$TEST_WORK_DIR/path/to"
+  run get_abs_path dir/../../to/dir/file
+  assert_output "$TEST_WORK_DIR/path/to/dir/file"
   assert_success
 }
 
 @test "get_abs_path rel path 3(file)" {
-  cd /tmp/test/a/b/c/d
-  run get_abs_path ./testfile
-  assert_output /tmp/test/a/b/c/d/testfile
+  cd "$TEST_WORK_DIR/path/to/dir"
+  run get_abs_path ./file
+  assert_output "$TEST_WORK_DIR/path/to/dir/file"
   assert_success
 }
 
 @test "get_abs_path rel path 4(file)" {
-  cd /tmp/test/a/b/c/d
-  run get_abs_path ../../testfile
-  assert_output /tmp/test/a/b/testfile
+  cd "$TEST_WORK_DIR/path/to/dir"
+  run get_abs_path ../file
+  assert_output "$TEST_WORK_DIR/path/to/file"
   assert_success
 }
-
+#TODO: file newline
 @test "get_abs_path when file not exist 1" {
-  cd /tmp/test/a/b/c/d
+  cd path/to/dir
   run get_abs_path file_not_exist
-  assert_output -p "[✗] get_abs_path : /tmp/test/a/b/c/d/file_not_exist does not exists"
+  assert_output -p "[✗] get_abs_path : $TEST_WORK_DIR/path/to/dir/file_not_exist does not exists"
   assert_failure
 }
 
 @test "get_abs_path when file not exist 2" {
-  cd /tmp/test/a/b/c/d
+  cd "path/to/dir"
   run get_abs_path ../../file_not_exist
-  assert_output -p "[✗] get_abs_path : /tmp/test/a/b/file_not_exist does not exists"
+  assert_output -p "[✗] get_abs_path : $TEST_WORK_DIR/path/file_not_exist does not exists"
   assert_failure
 }
 
-@test "get_abs_path ask path pattern * " {
-  cd /tmp/test/a/b/c/d
+@test "get_abs_path path name * " {
   run get_abs_path "*"
-  assert_output -p "[✗] get_abs_path : /tmp/test/a/b/c/d/* does not exists"
+  assert_output -p "[✗] get_abs_path : $TEST_WORK_DIR/* does not exists"
   assert_failure
 }
 
-@test "get_abs_path ask symlink" {
-  cd /tmp/test/a/b
-  run get_abs_path c/d/symlink_testfile
-  assert_output "/tmp/test/a/b/c/d/symlink_testfile"
+@test "get_abs_path abs symlink" {
+  run get_abs_path path/to/dir/abs_symlink
+  assert_output "$TEST_WORK_DIR/path/to/dir/abs_symlink"
   assert_success
 }
 
-@test "get_abs_path ask symlink is broken" {
-  cd /tmp/test/a/b/c
-  run get_abs_path "d/deadlink"
-  assert_output "/tmp/test/a/b/c/d/deadlink"
+@test "get_abs_path rel symlink" {
+  run get_abs_path path/to/dir/rel_symlink
+  assert_output "$TEST_WORK_DIR/path/to/dir/rel_symlink"
   assert_success
+}
+@test "get_abs_path symlink is broken" {
+  cd path/to/dir
+  run get_abs_path "$TEST_WORK_DIR/path/to/dir/broken_symlink"
+  assert_output "$TEST_WORK_DIR/path/to/dir/broken_symlink"
+  assert_success
+}
+
+@test "get_abs_path abs path(file name is contain newline)" {
+  run get_abs_path "$TEST_WORK_DIR/path/to/dir/newline
+file"
+  assert_output "$TEST_WORK_DIR/path/to/dir/newline
+file"
+  assert_success
+}
+
+@test "get_abs_path rel path(file name is contain newline)" {
+  run get_abs_path "path/to/dir/newline
+file"
+  assert_output "$TEST_WORK_DIR/path/to/dir/newline
+file"
+  assert_success
+}
+
+@test "get_abs_path abs path(dir name is contain newline)" {
+  run get_abs_path "$TEST_WORK_DIR/path/to/newline
+dir"
+  assert_output "$TEST_WORK_DIR/path/to/newline
+dir"
+  assert_success
+}
+
+@test "get_abs_path rel path(dir name is contain newline)" {
+  run get_abs_path "path/to/newline
+dir"
+  assert_output "$TEST_WORK_DIR/path/to/newline
+dir"
+  assert_success
+}
+
+@test "get_abs_path abs path(dir and file names are contain newline)" {
+  run get_abs_path "$TEST_WORK_DIR/path/to/newline
+dir/newline
+file"
+  assert_output "$TEST_WORK_DIR/path/to/newline
+dir/newline
+file"
+  assert_success
+}
+
+@test "get_abs_path rel path(dir and file names are contain newline)" {
+  run get_abs_path "path/to/newline
+dir/newline
+file"
+  assert_output "$TEST_WORK_DIR/path/to/newline
+dir/newline
+file"
+  assert_success
+}
+
+@test "get_abs_path abs path(dir name is contain emoji)" {
+  run get_abs_path "$TEST_WORK_DIR/$(echo -e "$EMOJI")"
+  assert_output "$TEST_WORK_DIR/$(echo -e "$EMOJI")"
+}
+
+@test "get_rel_path abs path(dir name is contain emoji)" {
+  run get_abs_path "./$(echo -e "$EMOJI")"
+  assert_output "$TEST_WORK_DIR/$(echo -e "$EMOJI")"
+}
+
+@test "get_abs_path abs path(file name is contain emoji)" {
+  run get_abs_path "$TEST_WORK_DIR/$(echo -e "$EMOJI")/$(echo -e "$EMOJI")"
+  assert_output "$TEST_WORK_DIR/$(echo -e "$EMOJI")/$(echo -e "$EMOJI")"
+}
+
+@test "get_rel_path abs path(file name is contain emoji)" {
+  run get_abs_path "./$(echo -e "$EMOJI")/$(echo -e "$EMOJI")"
+  assert_output "$TEST_WORK_DIR/$(echo -e "$EMOJI")/$(echo -e "$EMOJI")"
 }
