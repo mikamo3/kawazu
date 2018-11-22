@@ -25,7 +25,11 @@ get_abs_path() {
     print_error "${FUNCNAME[0]} : $dir does not exists"
     return 1
   fi
-  dir=$(cd "$dir" && pwd)
+  if [[ "$dir" =~ ^- ]]; then
+    dir=$(cd "./$dir" && pwd)
+  else
+    dir=$(cd "$dir" && pwd)
+  fi
   if [[ ! -L $dir$base && ! -e $dir$base ]]; then
     print_error "${FUNCNAME[0]} : $dir$base does not exists"
     return 1

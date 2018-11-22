@@ -228,3 +228,27 @@ file"
   assert_output "$TEST_WORK_DIR/$(emoji)/$(emoji)"
   assert_success
 }
+
+@test "get_abs_path abs path(dir name is contain dash)" {
+  run get_abs_path "$TEST_WORK_DIR/-"
+  assert_output "$TEST_WORK_DIR/-"
+  assert_success
+}
+
+@test "get_abs_path rel path(dir name is contain dash)" {
+  run get_abs_path "-"
+  assert_output "$TEST_WORK_DIR/-"
+  assert_success
+}
+
+@test "get_abs_path abs path(file name is contain dash)" {
+  run get_abs_path "$TEST_WORK_DIR/-/-"
+  assert_output "$TEST_WORK_DIR/-/-"
+  assert_success
+}
+
+@test "get_abs_path rel path(file name is contain dash)" {
+  run get_abs_path "./-/-"
+  assert_output "$TEST_WORK_DIR/-/-"
+  assert_success
+}
