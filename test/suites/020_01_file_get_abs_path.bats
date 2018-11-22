@@ -5,17 +5,13 @@ load ../helper/bats-assert/load
 load ../helper/bats-file/load
 
 setup() {
-  export_env
+  prepare_test
   source ${KAWAZU_ROOT_DIR}/lib/console.sh
   source ${KAWAZU_ROOT_DIR}/lib/file.sh
-
-  create_test_directory
-  create_test_files
-  cd "$TEST_WORK_DIR"
 }
 
 teardown() {
-  delete_test_directory
+  delete_test_dir
 }
 
 @test "get_abs_path with no args" {
@@ -210,21 +206,21 @@ file"
 }
 
 @test "get_abs_path abs path(dir name is contain emoji)" {
-  run get_abs_path "$TEST_WORK_DIR/$(echo -e "$EMOJI")"
-  assert_output "$TEST_WORK_DIR/$(echo -e "$EMOJI")"
+  run get_abs_path "$TEST_WORK_DIR/$(emoji)"
+  assert_output "$TEST_WORK_DIR/$(emoji)"
 }
 
 @test "get_rel_path abs path(dir name is contain emoji)" {
-  run get_abs_path "./$(echo -e "$EMOJI")"
-  assert_output "$TEST_WORK_DIR/$(echo -e "$EMOJI")"
+  run get_abs_path "./$(emoji)"
+  assert_output "$TEST_WORK_DIR/$(emoji)"
 }
 
 @test "get_abs_path abs path(file name is contain emoji)" {
-  run get_abs_path "$TEST_WORK_DIR/$(echo -e "$EMOJI")/$(echo -e "$EMOJI")"
-  assert_output "$TEST_WORK_DIR/$(echo -e "$EMOJI")/$(echo -e "$EMOJI")"
+  run get_abs_path "$TEST_WORK_DIR/$(emoji)/$(emoji)"
+  assert_output "$TEST_WORK_DIR/$(emoji)/$(emoji)"
 }
 
 @test "get_rel_path abs path(file name is contain emoji)" {
-  run get_abs_path "./$(echo -e "$EMOJI")/$(echo -e "$EMOJI")"
-  assert_output "$TEST_WORK_DIR/$(echo -e "$EMOJI")/$(echo -e "$EMOJI")"
+  run get_abs_path "./$(emoji)/$(emoji)"
+  assert_output "$TEST_WORK_DIR/$(emoji)/$(emoji)"
 }
