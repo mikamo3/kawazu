@@ -208,19 +208,23 @@ file"
 @test "get_abs_path abs path(dir name is contain emoji)" {
   run get_abs_path "$TEST_WORK_DIR/$(emoji)"
   assert_output "$TEST_WORK_DIR/$(emoji)"
+  assert_success
 }
 
-@test "get_rel_path abs path(dir name is contain emoji)" {
+@test "get_abs_path rel path(dir name is contain emoji)" {
   run get_abs_path "./$(emoji)"
   assert_output "$TEST_WORK_DIR/$(emoji)"
+  assert_success
 }
 
 @test "get_abs_path abs path(file name is contain emoji)" {
   run get_abs_path "$TEST_WORK_DIR/$(emoji)/$(emoji)"
   assert_output "$TEST_WORK_DIR/$(emoji)/$(emoji)"
+  assert_success
 }
 
-@test "get_rel_path abs path(file name is contain emoji)" {
+@test "get_abs_path rel path(file name is contain emoji)" {
   run get_abs_path "./$(emoji)/$(emoji)"
   assert_output "$TEST_WORK_DIR/$(emoji)/$(emoji)"
+  assert_success
 }
