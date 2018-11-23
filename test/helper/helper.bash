@@ -28,8 +28,7 @@ export_env() {
 }
 
 emoji() {
-  # shellckeck disable=SC1117
-  echo -e "\U1f479"
+  echo -e "\\U1f479"
 }
 #shellcheck disable=SC2120
 create_test_files() {
@@ -41,7 +40,7 @@ create_test_files() {
 dir $(emoji)*"
   mkdir -p "${prefix_dir}path/to/-newline
 dir $(emoji)*"
-
+  touch "${prefix_dir}file"
   touch "${prefix_dir}path/to/file"
   touch "${prefix_dir}path/to/dir/file"
   touch "${prefix_dir}path/to/-newline
@@ -134,4 +133,26 @@ get_current_branch() {
   local branch
   branch=$(cd "$KAWAZU_DOTFILES_DIR" && git branch | grep "^\\* ")
   echo "${branch#* }"
+}
+
+git_add_file() {
+  local target_file_path=$1
+  (
+    cd "$KAWAZU_DOTFILES_DIR" || return 1
+    local target_dir_path
+    target_dir_path="$(dirname "$target_file_path")"
+    [[ -n "$target_dir_path" ]] && mkdir -p "$target_dir_path"
+    touch "$target_file_path"
+    git add "$target_file_path"
+  )
+}
+
+git_get_file_status() {
+  local target_file_path=$1
+  local status=$2
+  (
+    cd "$KAWAZU_DOTFILES_DIR" || return 1
+    git status -s #for debug
+    git status -s | grep "^\\s*${status}\\s\\+\"\\?${target_file_path}\"\\?"
+  )
 }

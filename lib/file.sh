@@ -25,11 +25,7 @@ get_abs_path() {
     print_error "${FUNCNAME[0]} : $dir does not exists"
     return 1
   fi
-  if [[ "$dir" =~ ^[^/] ]]; then
-    dir=$(cd "./$dir" && pwd)
-  else
-    dir=$(cd "$dir" && pwd)
-  fi
+  dir=$(cd "$(dot_slash "$dir")" && pwd)
   if [[ ! -L $dir$base && ! -e $dir$base ]]; then
     print_error "${FUNCNAME[0]} : $dir$base does not exists"
     return 1
@@ -62,13 +58,19 @@ get_symlink_abs_path() {
     print_error "${FUNCNAME[0]} : $target_path is not symbolic link"
     return 1
   fi
-  if [[ "$target_path" =~ ^[^/] ]]; then
-    target_path="./$target_path"
-  fi
+  target_path=$(dot_slash "$target_path")
   target_symlink_path=$(readlink "$target_path")
   if [[ "$target_symlink_path" =~ ^/ ]]; then
     echo "$target_symlink_path"
     return 0
   fi
   get_abs_path "$(dirname "$(get_abs_path "$target_path")")/${target_symlink_path}"
+}
+
+dot_slash() {
+  if [[ $1 =~ ^[^/] ]]; then
+    echo "./$1"
+  else
+    echo "$1"
+  fi
 }

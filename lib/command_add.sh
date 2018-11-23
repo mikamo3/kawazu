@@ -57,12 +57,12 @@ command_add() {
     rm -rf "$target_repository_path"
   fi
   mkdir -p "$(dirname "$target_repository_path")"
-  mv "$target_path" "$target_repository_path"
+  mv "$(dot_slash "$target_path")" "$target_repository_path"
 
   #git add
-  result=$(cd "$(dirname "$target_repository_path")" && git add "$(basename "$target_repository_path")") || {
-    print_error "$result\nmv $target_repository_path → $target_path"
-    mv "$target_repository_path" "$target_path"
+  result=$(cd "$(dirname "$target_repository_path")" && git add "./$(basename "$target_repository_path")") || {
+    print_error "$result\\nmv $target_repository_path → $target_path"
+    mv "$target_repository_path" "$(dot_slash"$target_path")"
     return 1
   }
 
