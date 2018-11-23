@@ -5,11 +5,10 @@ load ../helper/bats-assert/load
 load ../helper/bats-file/load
 
 setup() {
-  export_env
+  prepare_test
   source ${KAWAZU_ROOT_DIR}/lib/console.sh
   source ${KAWAZU_ROOT_DIR}/lib/file.sh
   source ${KAWAZU_ROOT_DIR}/lib/command_init.sh
-  create_test_files
 }
 
 teardown() {
