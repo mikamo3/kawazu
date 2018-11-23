@@ -142,21 +142,21 @@ teardown() {
 }
 
 @test "get_abs_path abs symlink" {
-  run get_abs_path path/to/dir/abs_symlink
-  assert_output "$TEST_WORK_DIR/path/to/dir/abs_symlink"
+  run get_abs_path path/to/symlink_dir/abs_symlink
+  assert_output "$TEST_WORK_DIR/path/to/symlink_dir/abs_symlink"
   assert_success
 }
 
 @test "get_abs_path rel symlink" {
-  run get_abs_path path/to/dir/rel_symlink
-  assert_output "$TEST_WORK_DIR/path/to/dir/rel_symlink"
+  run get_abs_path path/to/symlink_dir/rel_symlink
+  assert_output "$TEST_WORK_DIR/path/to/symlink_dir/rel_symlink"
   assert_success
 }
 
 @test "get_abs_path symlink is broken" {
   cd path/to/dir
-  run get_abs_path "$TEST_WORK_DIR/path/to/dir/broken_symlink"
-  assert_output "$TEST_WORK_DIR/path/to/dir/broken_symlink"
+  run get_abs_path "$TEST_WORK_DIR/path/to/symlink_dir/broken_symlink"
+  assert_output "$TEST_WORK_DIR/path/to/symlink_dir/broken_symlink"
   assert_success
 }
 

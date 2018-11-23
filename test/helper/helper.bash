@@ -35,38 +35,36 @@ create_test_files() {
   local prefix_dir="$TEST_WORK_DIR/"
   [[ $# != 0 ]] && prefix_dir="$1/"
   mkdir -p "${prefix_dir}path/to/dir"
-  mkdir -p "${prefix_dir}path/to/dir2"
-  mkdir -p "${prefix_dir}path/to/newline
-dir"
-  mkdir -p "${prefix_dir}$(emoji)"
-  mkdir -p "${prefix_dir}/-"
+  mkdir -p "${prefix_dir}path/to/symlink_dir"
+  mkdir -p "${prefix_dir}path/to/symlink_dir/-newline
+dir $(emoji)*"
+  mkdir -p "${prefix_dir}path/to/-newline
+dir $(emoji)*"
 
   touch "${prefix_dir}path/to/file"
   touch "${prefix_dir}path/to/dir/file"
   touch "${prefix_dir}path/to/dir/file space"
-  touch "${prefix_dir}path/to/dir/newline
-file"
-  touch "${prefix_dir}path/to/newline
-dir/newline
-file"
-  touch "${prefix_dir}$(emoji)/$(emoji)"
-  touch "${prefix_dir}/-/-"
+  touch "${prefix_dir}path/to/-newline
+dir $(emoji)*/-newline
+file $(emoji)*"
 
-  ln -s "../file" "${prefix_dir}path/to/dir/rel_symlink"
-  ln -s "../file" "${prefix_dir}path/to/newline
-dir/rel_symlink"
-  ln -s "../newline
-dir/newline
-file" "${prefix_dir}path/to/dir/rel_symlink_newline"
-  ln -s "/not_exist_file" "${prefix_dir}path/to/dir/broken_symlink"
+  ln -s "../file" "${prefix_dir}path/to/symlink_dir/rel_symlink"
+  ln -s "../dir" "${prefix_dir}path/to/symlink_dir/rel_dir_symlink"
+  ln -s "/not_exist_file" "${prefix_dir}path/to/symlink_dir/broken_symlink"
+  ln -s "../../-newline
+dir $(emoji)*/-newline
+file $(emoji)*" "${prefix_dir}path/to/symlink_dir/-newline
+dir $(emoji)*/-newline
+file $(emoji)* rel_symlink"
 
   if [[ "$prefix_dir" == "$TEST_WORK_DIR/" ]]; then
-    ln -s "${prefix_dir}path/to/file" "${prefix_dir}path/to/dir/abs_symlink"
-    ln -s "${prefix_dir}path/to/file" "${prefix_dir}path/to/newline
-dir/abs_symlink"
-    ln -s "${prefix_dir}path/to/newline
-dir/newline
-file" "${prefix_dir}path/to/dir/abs_symlink_newline"
+    ln -s "${prefix_dir}path/to/file" "${prefix_dir}path/to/symlink_dir/abs_symlink"
+    ln -s "${prefix_dir}path/to/dir" "${prefix_dir}path/to/symlink_dir/abs_dir_symlink"
+    ln -s "${prefix_dir}path/to/-newline
+dir $(emoji)*/-newline
+file $(emoji)*" "${prefix_dir}path/to/symlink_dir/-newline
+dir $(emoji)*/-newline
+file $(emoji)* abs_symlink"
   fi
 }
 

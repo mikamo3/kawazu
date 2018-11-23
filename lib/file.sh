@@ -47,7 +47,6 @@ get_symlink_abs_path() {
   fi
 
   local target_path=$1
-  local target_abs_path
   local target_symlink_path
 
   if [[ ! -e "$target_path" && -L "$target_path" ]]; then
@@ -63,12 +62,13 @@ get_symlink_abs_path() {
     print_error "${FUNCNAME[0]} : $target_path is not symbolic link"
     return 1
   fi
+  if [[ "$target_path" =~ ^[^/] ]]; then
+    target_path="./$target_path"
+  fi
   target_symlink_path=$(readlink "$target_path")
-  if [[ "$target_symlink_path" =~ ^/.* ]]; then
+  if [[ "$target_symlink_path" =~ ^/ ]]; then
     echo "$target_symlink_path"
     return 0
   fi
-  target_abs_path=$(get_abs_path "$target_path")
-  [[ ! -d "$target_abs_path" ]] && target_abs_path=$(dirname "$target_abs_path")
-  get_abs_path "${target_abs_path}/$(readlink "$target_path")"
+  get_abs_path "$(dirname "$(get_abs_path "$target_path")")/${target_symlink_path}"
 }
