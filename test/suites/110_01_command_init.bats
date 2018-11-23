@@ -9,39 +9,37 @@ setup() {
   source ${KAWAZU_ROOT_DIR}/lib/console.sh
   source ${KAWAZU_ROOT_DIR}/lib/file.sh
   source ${KAWAZU_ROOT_DIR}/lib/command_init.sh
-  create_test_directory
+  create_test_files
 }
 
 teardown() {
-  delete_test_directory
+  delete_test_dir
 }
 
 @test "init when dotfiles directory does not exists" {
+  rm -rf "$KAWAZU_DOTFILES_DIR"
   run init
   assert_success
-  is_git_repository /tmp/test/.dotfiles
-  assert_output -p "[✓] git repository created : /tmp/test/.dotfiles"
+  is_git_repository "$KAWAZU_DOTFILES_DIR"
+  assert_output -p "[✓] git repository created : $KAWAZU_DOTFILES_DIR"
 }
 
 @test "init when dofiles already exists .git file" {
-  mkdir -p /tmp/test/.dotfiles
-  touch /tmp/test/.dotfiles/.git
+  touch "$KAWAZU_DOTFILES_DIR/.git"
   run init
   assert_failure
   assert_output -p "[✗] "
 }
 
 @test "init when dotfiles directory already exists" {
-  mkdir -p /tmp/test/.dotfiles/.git
   run init
   assert_success
-  assert_output -p "[✓] git repository created : /tmp/test/.dotfiles"
+  assert_output -p "[✓] git repository created : $KAWAZU_DOTFILES_DIR"
 }
 
 @test "init when dotfiles directory already managed by git" {
-  mkdir -p /tmp/test/.dotfiles/
-  create_dotfiles_git_repository
+  create_git_repository
   run init
   assert_success
-  assert_output -p "[i] /tmp/test/.dotfiles is already managed by git"
+  assert_output -p "[i] $KAWAZU_DOTFILES_DIR is already managed by git"
 }
