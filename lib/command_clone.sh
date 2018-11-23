@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
 clone() {
   if [[ $# == 0 ]]; then
-    print_error "${FUNCNAME[0]} : need repo [branch]"
-    exit 1
+    #FIXME: print usage
+    print_error ""
+    return 1
   fi
   local repo=$1
-  local branch=
+  local branch
   local clone_to_path=$KAWAZU_DOTFILES_DIR
 
   if [[ $# == 2 ]]; then
@@ -14,7 +15,7 @@ clone() {
   if [[ -e "$clone_to_path" ]]; then
     if (cd "$clone_to_path" && git rev-parse --is-inside-work-tree &>/dev/null); then
       print_info "$clone_to_path is already managed by git. skip"
-      return 0
+      return 1
     fi
   fi
 

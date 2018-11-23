@@ -20,6 +20,7 @@ export_env() {
 
   # shellckeck disable=SC2034
   GIT_REMOTE_URL="https://github.com/mikamo3/test_repos.git"
+
   mkdir -p "$TEST_WORK_DIR"
   mkdir -p "$KAWAZU_DOTFILES_DIR"
   mkdir -p "$HOME"
@@ -43,7 +44,6 @@ dir $(emoji)*"
 
   touch "${prefix_dir}path/to/file"
   touch "${prefix_dir}path/to/dir/file"
-  touch "${prefix_dir}path/to/dir/file space"
   touch "${prefix_dir}path/to/-newline
 dir $(emoji)*/-newline
 file $(emoji)*"
@@ -89,30 +89,36 @@ create_git_repository() {
 create_local_git_bare_repository() {
   local worktree_dir
   local submodule_worktree_dir
+  mkdir -p "$BARE_REPOS_DIR"
+  mkdir -p "$SUBMODULE_BARE_REPOS_DIR"
   worktree_dir=$(mktemp -d "$TEST_WORK_DIR/XXXXXXXXX")
   submodule_worktree_dir=$(mktemp -d "$TEST_WORK_DIR/XXXXXXXXX")
 
-  mkdir -p "$BARE_REPOS_DIR"
   (cd "$BARE_REPOS_DIR" && git init --bare)
 
   (cd "$SUBMODULE_BARE_REPOS_DIR" && git init --bare)
 
   git clone "$SUBMODULE_BARE_REPOS_DIR" "$submodule_worktree_dir"
-  (
-    cd "$submodule_worktree_dir" || return 1
-    #shellcheck disable=SC2119
-    create_test_files
-    git add -A
-    git commit -m "testcommit"
-    git push
-  )
+  git_create_file_and_push "$submodule_worktree_dir"
 
   git clone "$BARE_REPOS_DIR" "$worktree_dir"
   (
     cd "$worktree_dir" || return 1
-    #shellcheck disable=SC2119
-    create_test_files
     git submodule add "$SUBMODULE_BARE_REPOS_DIR" submodule
+  )
+  git_create_file_and_push "$worktree_dir"
+  rm -rf "$submodule_worktree_dir"
+  rm -rf "$worktree_dir"
+}
+
+git_create_file_and_push() {
+  local target_path=$1
+  (
+    cd "$target_path" || return 1
+    git config user.name "test"
+    git config user.email "test@example.com"
+    #shellcheck disable=SC2119
+    create_test_files "$target_path"
     git add -A
     git commit -m "testcommit"
     git push
