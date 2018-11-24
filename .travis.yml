@@ -21,5 +21,6 @@ script:
   - docker run --rm kawazu_bash_$BASH_VAR /tmp/kawazu/test/run_tests
   - docker run --rm kawazu_bash_$BASH_VAR /tmp/kawazu/test/shellcheck
 notifications:
+  email: false
   slack:
     secure: jUOch3g0ls+AyJhFGxdhc3oJH406x6TKqQmIOd1sdKZ687FD4U96dzhRNMFZ1OZZrqwAITwRx2PpPMzFOnRJ9BWQ/+vLbXQun6xazKHvpJLFOhY98wHWIBTy3ADrNtHC9Lky3e60hRuZGr+qI/9RH26MtrfpRJ3S9I9zAeQCf4oSUISeJSILZab5Yh31ysRytiGg7iy29b1BhcV+4wcY7VMY8aAhiRpl/USmv3ASz96PmLL6QQeZC7s8ww2hU8YF1Iz946HKMpnUpRLeZioPz64DIYSbvRLemKwQBByvt8z7BKR1v9yV6Ju1RYY/WzN2DztvNrHERWYU2b2vTRUgidudCOz3eUEYMeLHP3JT/3kUqOhGi39S09F6TeazxQT+z6Y/JGyKbsXJC+IfzsdWPePzXjfQMyB4aJkwikiaPuezdxDmZtFq4KdiFfkxtWUFPmWs5NemC3r8LrfUrQyZ23NB9bvHZV1yr/bcIcM5LQfm3HqCLV2yqwoGA1eKr/x9OyP5vTdHxFCEb5yTjOc6i38hDf4noV+e77PLcsJmmF14MJx/fb7fV+YJ5OzJhJn+JqEltjDV1hpIKG4M6yvu2IB4gS9qF6daIf/XCcaib1p1B6ktUmw+PFH5A69I6AYVYsR4iy1Wcc6m9XajVJCKGnwc+sdl0q95RXXGGGbWLY4=
