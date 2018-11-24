@@ -11,7 +11,7 @@ setup() {
   expect_prompt="\\r\\nbash-\[0-9\]{1,}\\\\.\[0-9\]{1,}\\\\$"
 }
 
-@test "question " {
+@test "question answer anwser to question" {
   run expect <<EOF
     set timeout 1
     spawn bash --norc
@@ -29,7 +29,7 @@ EOF
 
 }
 
-@test "answer to the question is yes" {
+@test "confirm answer y to confirm" {
   run expect <<EOF
     set timeout 1
     spawn bash --norc
@@ -48,26 +48,7 @@ EOF
   assert_success
 }
 
-@test "answer to the question is Yes" {
-  run expect <<EOF
-    set timeout 1
-    spawn bash --norc
-    send "source ${KAWAZU_ROOT_DIR}/lib/console.sh\n"
-    send "source ${KAWAZU_ROOT_DIR}/lib/interactive.sh\n"
-    send "confirm message\n"
-    expect -ex "$expect_header message (y/n) : " {} default {exit 1}
-    send "Y"
-    expect -re "$expect_prompt" {} default {exit 1}
-    send "confirm_is_yes\n"
-    expect -re "$expect_prompt" {} default {exit 1}
-    send "echo $\?\n"
-    expect -ex "\r\n0" {send "exit\n";exit 0} default {exit 1}
-    exit 1
-EOF
-  assert_success
-}
-
-@test "answer to the question is No" {
+@test "confirm answer n to confirm" {
   run expect <<EOF
     set timeout 1
     spawn bash --norc
