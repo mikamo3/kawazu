@@ -3,6 +3,7 @@ export_env() {
   TEST_WORK_DIR=$(mktemp -d)
   KAWAZU_ROOT_DIR="$BATS_TEST_DIRNAME/../.."
   KAWAZU_DOTFILES_DIR="$TEST_WORK_DIR/.dotfiles"
+  KAWAZU_BACKUP_DIR="$TEST_WORK_DIR/.backup"
   HOME="$TEST_WORK_DIR/home/user"
   KAWAZU_VERSION="0.1"
   OPT_DEBUG=true
@@ -11,6 +12,7 @@ export_env() {
   export TEST_WORK_DIR
   export KAWAZU_ROOT_DIR
   export KAWAZU_DOTFILES_DIR
+  export KAWAZU_BACKUP_DIR
   export KAWAZU_VERSION
   export OPT_DEBUG
 
