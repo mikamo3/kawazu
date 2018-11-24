@@ -68,7 +68,7 @@ get_symlink_abs_path() {
 }
 
 dot_slash() {
-  if [[ $1 =~ ^[^/] ]]; then
+  if [[ ! $1 =~ ^(/|\./) ]]; then
     echo "./$1"
   else
     echo "$1"
