@@ -19,7 +19,7 @@ setup() {
   expect_success_header="\r\n\u001b\[32m\[✓\]"
   expect_reset="\u001b\[0m"
   expect_prompt="\\r\\nbash-\[0-9\]{1,}\\\\.\[0-9\]{1,}\\\\$"
-  git_add_unsuable_file_path="path/to/-newline\\\\n\
+  git_add_unsuitable_file_path="path/to/-newline\\\\n\
 dir \\\\360\\\\237\\\\221\\\\271\\*/-newline\\\\n\
 file \\\\360\\\\237\\\\221\\\\271\\*"
   cd "$HOME"
@@ -207,7 +207,7 @@ file $(emoji)*"
   assert_line -n 8 -p "dir $(emoji)*/-newline"
   assert_line -n 9 -p "file $(emoji)*"
   assert_success
-  assert git_get_file_status "$git_add_unsuable_file_path" "A"
+  assert git_get_file_status "$git_add_unsuitable_file_path" "A"
 }
 
 @test "command_add target file path contain unsuitable character (cur dir is target file dir)" {
@@ -216,7 +216,7 @@ dir $(emoji)*"
   run command_add "-newline
 file $(emoji)*"
   assert_success
-  assert git_get_file_status "$git_add_unsuable_file_path" "A"
+  assert git_get_file_status "$git_add_unsuitable_file_path" "A"
 }
 
 @test "command_add target file path contain unsuitable character and already managed (cur dir is home)" {
@@ -240,7 +240,7 @@ file $(emoji)*" < <(echo y)
   assert_line -n 11 -p "dir $(emoji)*/-newline"
   assert_line -n 12 -p "file $(emoji)*"
   assert_success
-  assert git_get_file_status "$git_add_unsuable_file_path" "A"
+  assert git_get_file_status "$git_add_unsuitable_file_path" "A"
 }
 
 @test "command_add target file path contain unsuitable character and already managed (cur dir is target file dir)" {
@@ -249,5 +249,5 @@ dir $(emoji)*"
   run command_add "-newline
 file $(emoji)*" < <(echo y)
   assert_success
-  assert git_get_file_status "$git_add_unsuable_file_path" "A"
+  assert git_get_file_status "$git_add_unsuitable_file_path" "A"
 }
