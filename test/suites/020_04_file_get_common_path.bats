@@ -80,22 +80,22 @@ teardown() {
 }
 
 @test "get_common_path path1 is broken link" {
-  run get_common_path "path/to/symlink_dir/broken_symlink" "/path/to"
+  run get_common_path "path/to/symlink_dir/broken_symlink" "path/to"
   assert_output "$TEST_WORK_DIR/path/to"
   assert_success
 }
 
 @test "get_common_path path2 is broken link" {
-  run get_common_path "/path/to" "path/to/symlink_dir/broken_symlink"
+  run get_common_path "path/to" "path/to/symlink_dir/broken_symlink"
   assert_output "$TEST_WORK_DIR/path/to"
   assert_success
 }
 
 @test "get_common_path each paths contain unsuitable caracter" {
   cd "path/to"
-  run get_common_path "path/to/-newline
+  run get_common_path "-newline
 dir $(emoji)*/-newline
-file $(emoji)*" "path/to/-newline
+file $(emoji)*" "-newline
 dir $(emoji)*/-newline
 file $(emoji)*"
   assert_output "$TEST_WORK_DIR/path/to/-newline
