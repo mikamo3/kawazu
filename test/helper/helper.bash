@@ -37,6 +37,7 @@ create_test_files() {
   local prefix_dir="$TEST_WORK_DIR/"
   [[ $# != 0 ]] && prefix_dir="$1/"
   mkdir -p "${prefix_dir}path/to/dir"
+  mkdir -p "${prefix_dir}path/to/dir2"
   mkdir -p "${prefix_dir}path/to/symlink_dir"
   mkdir -p "${prefix_dir}path/to/symlink_dir/-newline
 dir $(emoji)*"
