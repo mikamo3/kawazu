@@ -54,3 +54,24 @@ teardown() {
   run is_git_managed_file "$KAWAZU_DOTFILES_DIR/file"
   assert_success
 }
+
+@test "is_git_managed_file target is file (cur dir)" {
+  cd "$KAWAZU_DOTFILES_DIR"
+  run is_git_managed_file "file"
+  assert_success
+}
+
+@test "is_git_managed_file target file contain unsuitable character" {
+  run is_git_managed_file "$KAWAZU_DOTFILES_DIR/path/to/-newline
+dir $(emoji)*/-newline
+file $(emoji)*"
+  assert_success
+}
+
+@test "is_git_managed_file target file contain unsuitable character (cur dir)" {
+  cd "$KAWAZU_DOTFILES_DIR/path/to/-newline
+dir $(emoji)*"
+  run is_git_managed_file "-newline
+file $(emoji)*"
+  assert_success
+}
