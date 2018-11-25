@@ -7,9 +7,10 @@ load ../helper/bats-file/load
 setup() {
   prepare_test
   source ${KAWAZU_ROOT_DIR}/lib/console.sh
+  source ${KAWAZU_ROOT_DIR}/lib/file.sh
   source ${KAWAZU_ROOT_DIR}/lib/git.sh
   create_local_git_bare_repository
-  git clone "$BARE_REPOS_DIR" "$KAWAZU_DOTFILES_DIR"
+  git clone --recurse-submodules "$BARE_REPOS_DIR" "$KAWAZU_DOTFILES_DIR"
   (
     cd "$KAWAZU_DOTFILES_DIR" || return 1
     git add -A
@@ -41,23 +42,26 @@ teardown() {
 
 @test "is_git_managed_file target is dir" {
   run is_git_managed_file "$KAWAZU_DOTFILES_DIR"
-  assert_output
+  assert_output ""
   assert_failure
 }
 
 @test "is_git_managed_file target is submodule file" {
   run is_git_managed_file "$KAWAZU_DOTFILES_DIR/submodule/file"
+  assert_output ""
   assert_success
 }
 
 @test "is_git_managed_file target is file" {
   run is_git_managed_file "$KAWAZU_DOTFILES_DIR/file"
+  assert_output ""
   assert_success
 }
 
 @test "is_git_managed_file target is file (cur dir)" {
   cd "$KAWAZU_DOTFILES_DIR"
   run is_git_managed_file "file"
+  assert_output ""
   assert_success
 }
 
@@ -65,6 +69,7 @@ teardown() {
   run is_git_managed_file "$KAWAZU_DOTFILES_DIR/path/to/-newline
 dir $(emoji)*/-newline
 file $(emoji)*"
+  assert_output ""
   assert_success
 }
 
@@ -73,5 +78,6 @@ file $(emoji)*"
 dir $(emoji)*"
   run is_git_managed_file "-newline
 file $(emoji)*"
+  assert_output ""
   assert_success
 }
