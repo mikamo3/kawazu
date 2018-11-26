@@ -143,7 +143,7 @@ EOF
   assert_file_not_exist "$KAWAZU_BACKUP_DIR/file"
 }
 
-@test "_do_link target file path conatain unsuitable character" {
+@test "_do_link target file path contain unsuitable character" {
   run _do_link "$KAWAZU_DOTFILES_DIR/path/to/-newline
 dir $(emoji)*/-newline
 file $(emoji)*"

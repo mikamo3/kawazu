@@ -15,3 +15,7 @@ is_git_managed_file() {
   [[ -z "$result" ]] && return 1
   return 0
 }
+
+list_git_managed_files() {
+  :
+}
