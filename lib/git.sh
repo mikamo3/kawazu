@@ -17,5 +17,33 @@ is_git_managed_file() {
 }
 
 list_git_managed_files() {
-  :
+  if [[ $# != 1 ]]; then
+    print_error "${FUNCNAME[0]} : need worktree_path"
+    return 1
+  fi
+  local worktree_path
+  local exclude_file_name=".gitmodules"
+  if [[ ! -d "$1" ]]; then
+    print_error "${FUNCNAME[0]} : $1 is not directory. Please specify a file."
+    return 1
+  fi
+  worktree_path=$(get_abs_path "$1") || return 1
+
+  (
+    cd "$worktree_path" || return 1
+    git rev-parse --is-inside-work-tree &>/dev/null || {
+      print_error "${FUNCNAME[0]} : $worktree_path is not git worktree"
+      return 1
+    }
+
+    while IFS= read -r file; do
+      local file_path
+      [[ "$file" =~ $exclude_file_name ]] && continue
+      file=${file#\"}
+      file=${file%\"}
+      file_path=$(printf "%b" "$worktree_path/$file" )
+      [[ ! -L "$file_path" && ! -e "$file_path" ]] && continue
+      printf "%b\\0" "$file_path"
+    done < <(git ls-files --recurse-submodules --exclude-standard)
+  )
 }

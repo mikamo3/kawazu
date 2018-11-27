@@ -1,4 +1,5 @@
 #!/usr/bin/bash
+
 export_env() {
   TEST_WORK_DIR=$(mktemp -d)
   KAWAZU_ROOT_DIR="$BATS_TEST_DIRNAME/../.."
@@ -83,7 +84,7 @@ delete_test_dir() {
 create_git_repository() {
   (mkdir -p "$KAWAZU_DOTFILES_DIR" \
     && cd "$KAWAZU_DOTFILES_DIR" \
-    && git init \
+    && git init &>/dev/null \
     && git config user.name "test" \
     && git config user.email "test@example.com")
 }
@@ -96,17 +97,17 @@ create_local_git_bare_repository() {
   worktree_dir=$(mktemp -d "$TEST_WORK_DIR/XXXXXXXXX")
   submodule_worktree_dir=$(mktemp -d "$TEST_WORK_DIR/XXXXXXXXX")
 
-  (cd "$BARE_REPOS_DIR" && git init --bare)
+  (cd "$BARE_REPOS_DIR" && git init --bare &>/dev/null)
 
-  (cd "$SUBMODULE_BARE_REPOS_DIR" && git init --bare)
+  (cd "$SUBMODULE_BARE_REPOS_DIR" && git init --bare &>/dev/null)
 
-  git clone "$SUBMODULE_BARE_REPOS_DIR" "$submodule_worktree_dir"
+  git clone "$SUBMODULE_BARE_REPOS_DIR" "$submodule_worktree_dir" &>/dev/null
   git_create_file_and_push "$submodule_worktree_dir"
 
-  git clone "$BARE_REPOS_DIR" "$worktree_dir"
+  git clone "$BARE_REPOS_DIR" "$worktree_dir" &>/dev/null
   (
     cd "$worktree_dir" || return 1
-    git submodule add "$SUBMODULE_BARE_REPOS_DIR" submodule
+    git submodule add "$SUBMODULE_BARE_REPOS_DIR" submodule &>/dev/null
   )
   git_create_file_and_push "$worktree_dir"
   rm -rf "$submodule_worktree_dir"
@@ -122,8 +123,8 @@ git_create_file_and_push() {
     #shellcheck disable=SC2119
     create_test_files "$target_path"
     git add -A
-    git commit -m "testcommit"
-    git push
+    git commit -m "testcommit" &>/dev/null
+    git push &>/dev/null
   )
 }
 
@@ -146,7 +147,7 @@ git_add_file() {
     target_dir_path="$(dirname "$target_file_path")"
     [[ -n "$target_dir_path" ]] && mkdir -p "$target_dir_path"
     touch "$target_file_path"
-    git add "$target_file_path"
+    git add "$target_file_path" &>/dev/null
   )
 }
 
@@ -158,4 +159,20 @@ git_get_file_status() {
     git status -s #for debug
     git status -s | grep "^\\s*${status}\\s\\+\"\\?${target_file_path}\"\\?"
   )
+}
+
+assert_result_with_null_byte() {
+  eval "
+    while IFS= read -r -d '' line; do
+      for((i=0;i<\${#$1[@]};i++)); do
+        if [[ \"\$line\" == \"\${${1}[\$i]}\" ]]; then
+          unset \"${1}[\$i]\"
+          ${1}=(\"\${${1}[@]}\")
+          break
+        fi
+        [[ \$((\$i+1)) == \${#$1[@]} ]] && fail
+      done
+    done < <(printf \"%b\\0\" \$${2} )
+    [[ \${#$1[@]} == 0 ]]|fail
+    "
 }

@@ -10,7 +10,7 @@ setup() {
   source ${KAWAZU_ROOT_DIR}/lib/file.sh
   source ${KAWAZU_ROOT_DIR}/lib/git.sh
   create_local_git_bare_repository
-  git clone --recurse-submodules "$BARE_REPOS_DIR" "$KAWAZU_DOTFILES_DIR"
+  git clone --recurse-submodules "$BARE_REPOS_DIR" "$KAWAZU_DOTFILES_DIR" &>/dev/null
   (
     cd "$KAWAZU_DOTFILES_DIR" || return 1
     git add -A
