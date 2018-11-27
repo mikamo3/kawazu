@@ -1,6 +1,12 @@
 #!/usr/bin/env bash
 command_link() {
-  :
+  if [[ $# == 0 ]]; then
+    while IFS= read -r -d $'\0' file <&3; do
+      _do_link "$file"
+    done 3< <(list_git_managed_files "$KAWAZU_DOTFILES_DIR")
+  else
+    _do_link "$1"
+  fi
 }
 
 _do_link() {
