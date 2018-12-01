@@ -2,7 +2,10 @@
 #TODO: write help
 command_help() {
   if [[ $# != 0 ]]; then
-    "_help_$1"
+    "_help_$1" 2>/dev/null || {
+      print_error "unknown command : $1"
+      return 1
+    }
   else
     cat <<EOF
 usage: kawazu [options] <command> [<args}]

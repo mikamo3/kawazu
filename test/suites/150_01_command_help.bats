@@ -6,6 +6,7 @@ load ../helper/bats-file/load
 
 setup() {
   prepare_test
+  source ${KAWAZU_ROOT_DIR}/lib/console.sh
   source ${KAWAZU_ROOT_DIR}/lib/command_help.sh
 }
 
@@ -42,4 +43,10 @@ teardown() {
 @test "command_help help unlink" {
   run command_help unlink
   assert_success
+}
+
+@test "command_help help unknown command" {
+  run command_help unknown_command
+  assert_output -p "[✗] unknown command : unknown_command"
+  assert_failure
 }
