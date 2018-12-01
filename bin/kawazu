@@ -1,11 +1,77 @@
 #!/usr/bin/env bash
-readonly KAWAZU_ROOT_DIR=${KAWAZU_ROOT_DIR:-$HOME/.kawazu/repos}
-readonly KAWAZU_DOTFILES_DIR=${KAWAZU_DOTFILES_DIR:-$HOME/.kawazu/dotfiles}
-
-# shellcheck disable=SC1090,SC1091
-source "$KAWAZU_ROOT_DIR/lib/console.sh"
-
 main() {
-  :
+  local cmd
+  local valid_commands="add|clone|init|link|unlink"
+  KAWAZU_ROOT_DIR=${KAWAZU_ROOT_DIR:-$HOME/.kawazu/repos}
+  KAWAZU_DOTFILES_DIR=${KAWAZU_DOTFILES_DIR:-$HOME/.kawazu/dotfiles}
+  KAWAZU_BACKUP_DIR=${KAWAZU_BACKUP_DIR:-$HOME/.kawazu/backup}
+
+  # shellcheck disable=SC1090
+  source "${KAWAZU_ROOT_DIR}/lib/console.sh"
+  # shellcheck disable=SC1090
+  source "${KAWAZU_ROOT_DIR}/lib/file.sh"
+  # shellcheck disable=SC1090
+  source "${KAWAZU_ROOT_DIR}/lib/git.sh"
+  # shellcheck disable=SC1090
+  source "${KAWAZU_ROOT_DIR}/lib/interactive.sh"
+
+  OPT_DEBUG=false
+  OPT_FORCE=false
+  OPT_SKIP=false
+
+  if ! type git &>/dev/null; then
+    print_error "Git is not installed."
+    return 1
+  fi
+
+  #set options
+  while [[ "$1" =~ ^- ]]; do
+    local -a options=()
+    if [[ "$1" =~ ^-[a-z] ]]; then
+      local opt_flgs=${1#-}
+      for ((i = 0; i < ${#opt_flgs}; i++)); do
+        options+=("${opt_flgs:$i:1}")
+      done
+    else
+      options=("${1#--}")
+    fi
+    for option in "${options[@]}"; do
+      case $option in
+      d | debug)
+        OPT_DEBUG=true
+        continue
+        ;;
+      f | force)
+        OPT_FORCE=true
+        continue
+        ;;
+      s | skip)
+        OPT_SKIP=true
+        continue
+        ;;
+      *)
+        print_error "invalid option : $1"
+        return 1
+        ;;
+      esac
+    done
+    shift
+  done
+
+  # run command
+  if [[ $# == 0 ]]; then
+    cmd="help"
+  else
+    if [[ $1 =~ ^${valid_commands}$ ]]; then
+      print_error "invalid command : $1"
+      return 1
+    fi
+    cmd=$1
+    shift
+  fi
+  # shellcheck disable=SC1090
+  source "$KAWAZU_ROOT_DIR/lib/command_$cmd.sh"
+  "command_$cmd"
 }
+
 main "$@"
