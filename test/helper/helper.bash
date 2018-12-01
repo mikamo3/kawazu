@@ -7,7 +7,6 @@ export_env() {
   KAWAZU_BACKUP_DIR="$TEST_WORK_DIR/.backup"
   HOME="$TEST_WORK_DIR/home/user"
   KAWAZU_VERSION="0.1"
-  OPT_DEBUG=true
 
   # use in script
   export TEST_WORK_DIR
@@ -15,7 +14,6 @@ export_env() {
   export KAWAZU_DOTFILES_DIR
   export KAWAZU_BACKUP_DIR
   export KAWAZU_VERSION
-  export OPT_DEBUG
 
   # use only in test
   BARE_REPOS_DIR="$TEST_WORK_DIR/repos.git"
@@ -163,6 +161,38 @@ git_get_file_status() {
 }
 
 assert_mock_output() {
+  local opt_debug_flg=false
+  local opt_force_flg=false
+  local opt_skip_flg=false
+  while [[ $1 =~ ^- ]]; do
+    local options=()
+    if [[ $1 =~ ^-[a-z] ]]; then
+      local param_flgs=${1:1}
+      for ((i = 0; i < ${#param_flgs}; i++)); do
+        options+=("${param_flgs:$i:1}")
+      done
+    else
+      options=("${1#--}")
+    fi
+    for option in "${options[@]}"; do
+      case $option in
+      d | debug)
+        opt_debug_flg=true
+        continue
+        ;;
+      f | force)
+        opt_force_flg=true
+        continue
+        ;;
+      s | skip)
+        opt_skip_flg=true
+        continue
+        ;;
+      *) fail "unknown option" ;;
+      esac
+    done
+    shift
+  done
   local line="$1"
   local called_function="$2"
   local output_parameters="parameters :"
@@ -173,4 +203,7 @@ assert_mock_output() {
     output_parameters+=" \"$i\""
   done
   assert_line -n "$((line + 1))" "$output_parameters"
+  assert_line -n "$((line + 2))" "options: OPT_DEBUG=$opt_debug_flg,\
+ OPT_FORCE=$opt_force_flg,\
+ OPT_SKIP=$opt_skip_flg"
 }

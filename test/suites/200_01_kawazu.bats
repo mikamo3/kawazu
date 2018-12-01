@@ -18,18 +18,18 @@ teardown() {
   delete_test_dir
 }
 
-@test "main with no args" {
+@test "kawazu with no args" {
   run kawazu
   assert_mock_output 0 main
   assert_success
 }
 
-@test "main run cd" {
+@test "kawazu run cd" {
   kawazu cd
   assert_equal "$(pwd)" "$KAWAZU_DOTFILES_DIR"
 }
 
-@test "main with args" {
+@test "kawazu with args" {
   run kawazu a b c
   assert_mock_output 0 main a b c
   assert_success
