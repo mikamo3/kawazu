@@ -15,5 +15,6 @@ RUN wget "https://storage.googleapis.com/shellcheck/shellcheck-stable.linux.x86_
 ADD bin /tmp/kawazu/bin
 ADD lib /tmp/kawazu/lib
 ADD test /tmp/kawazu/test
+ADD kawazu.sh /tmp/kawazu/kawazu.sh
 USER kawazu
 CMD ["/tmp/kawazu/test/run_tests"]

@@ -2,7 +2,7 @@
 
 export_env() {
   TEST_WORK_DIR=$(mktemp -d)
-  KAWAZU_ROOT_DIR="$BATS_TEST_DIRNAME/../.."
+  KAWAZU_ROOT_DIR="$(cd "$BATS_TEST_DIRNAME/../.." && pwd)"
   KAWAZU_DOTFILES_DIR="$TEST_WORK_DIR/.dotfiles"
   KAWAZU_BACKUP_DIR="$TEST_WORK_DIR/.backup"
   HOME="$TEST_WORK_DIR/home/user"
@@ -149,6 +149,7 @@ git_add_file() {
     touch "$target_file_path"
     git add "$target_file_path" &>/dev/null
   )
+
 }
 
 git_get_file_status() {
@@ -161,18 +162,15 @@ git_get_file_status() {
   )
 }
 
-assert_result_with_null_byte() {
-  eval "
-    while IFS= read -r -d '' line; do
-      for((i=0;i<\${#$1[@]};i++)); do
-        if [[ \"\$line\" == \"\${${1}[\$i]}\" ]]; then
-          unset \"${1}[\$i]\"
-          ${1}=(\"\${${1}[@]}\")
-          break
-        fi
-        [[ \$((\$i+1)) == \${#$1[@]} ]] && fail
-      done
-    done < <(printf \"%b\\0\" \$${2} )
-    [[ \${#$1[@]} == 0 ]]|fail
-    "
+assert_mock_output() {
+  local line="$1"
+  local called_function="$2"
+  local output_parameters="parameters :"
+  shift
+  shift
+  assert_line -n "$line" "called from : $called_function"
+  for i in "$@"; do
+    output_parameters+=" \"$i\""
+  done
+  assert_line -n "$((line + 1))" "$output_parameters"
 }
