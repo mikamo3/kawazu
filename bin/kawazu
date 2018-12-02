@@ -41,14 +41,17 @@ main() {
     for option in "${options[@]}"; do
       case $option in
       d | debug)
+        # shellcheck disable=SC2034
         OPT_DEBUG=true
         continue
         ;;
       f | force)
+        # shellcheck disable=SC2034
         OPT_FORCE=true
         continue
         ;;
       s | skip)
+        # shellcheck disable=SC2034
         OPT_SKIP=true
         continue
         ;;
@@ -65,32 +68,90 @@ main() {
   # run command
   if [[ $# == 0 ]]; then
     cmd="help"
+    exit_status=1
   else
-    if ! [[ $1 =~ ^"$valid_commands"$ ]]; then
-      print_error "invalid command : $cmd"
+    if ! [[ $1 =~ ^$valid_commands$ ]]; then
+      print_error "invalid command : $1"
       return 1
     fi
     cmd=$1
     shift
   fi
-  #check number ofparameter
+
+  #check number of parameter
   case $cmd in
+  help)
+    if [[ $# -gt 0 ]]; then
+      params=("$1")
+    fi
+    ;;
   add)
     if [[ $# == 0 ]]; then
       cmd="help"
+      params=("add")
       exit_status=1
+    else
+      params=("$@")
     fi
     ;;
-  clone) ;;
-  init) ;;
-  link) ;;
-  unlink) ;;
+  clone)
+    if [[ $# == 0 || $# -gt 2 ]]; then
+      cmd="help"
+      params=("clone")
+      exit_status=1
+    else
+      params=("$@")
+    fi
+    ;;
+  init)
+    if [[ $# -gt 1 ]]; then
+      cmd="help"
+      params=("init")
+      exit_status=1
+    else
+      params=("$@")
+    fi
+    ;;
+  link)
+    if [[ $# == 0 ]]; then
+      cmd="help"
+      params=("link")
+      exit_status=1
+    else
+      params=("$@")
+    fi
+    ;;
+  unlink)
+    if [[ $# == 0 ]]; then
+      cmd="help"
+      params=("unlink")
+      exit_status=1
+    else
+      params=("$@")
+    fi
+    ;;
   esac
 
   # shellcheck disable=SC1090
   source "$KAWAZU_ROOT_DIR/lib/command_$cmd.sh"
+  case "$cmd" in
+  add | link | unlink)
+    for param in "${params[@]}"; do
+      command_$cmd "$param"
+      result_code=$?
+      [[ $result_code != 0 ]] && exit_status=$result_code
+      unset result_code
+    done
+    ;;
+  *)
+    command_$cmd "${params[@]}"
+    result_code=$?
+    [[ $result_code != 0 ]] && exit_status=$result_code
+    unset result_code
+    ;;
+  esac
 
-  "command_$cmd" "$@"
+  return $exit_status
 }
 
 main "$@"

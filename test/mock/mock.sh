@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 print_mock_info() {
+  if [[ "$1" == "fail" ]]; then
+    return 1
+  fi
   echo "called from : ${FUNCNAME[1]}"
   printf "parameters :"
   for i in "$@"; do
