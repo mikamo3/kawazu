@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 main() {
   local cmd
+  local exit_status=0
+  local -a params=()
   local valid_commands="add|clone|init|link|unlink"
   KAWAZU_ROOT_DIR=${KAWAZU_ROOT_DIR:-$HOME/.kawazu/repos}
   KAWAZU_DOTFILES_DIR=${KAWAZU_DOTFILES_DIR:-$HOME/.kawazu/dotfiles}
@@ -26,12 +28,13 @@ main() {
 
   #set options
   while [[ "$1" =~ ^- ]]; do
-    local -a options=()
+    options=()
     if [[ "$1" =~ ^-[a-z] ]]; then
-      local opt_flgs=${1#-}
+      opt_flgs=${1#-}
       for ((i = 0; i < ${#opt_flgs}; i++)); do
         options+=("${opt_flgs:$i:1}")
       done
+      unset opt_flgs
     else
       options=("${1#--}")
     fi
@@ -55,6 +58,7 @@ main() {
         ;;
       esac
     done
+    unset options
     shift
   done
 
@@ -62,16 +66,31 @@ main() {
   if [[ $# == 0 ]]; then
     cmd="help"
   else
-    if [[ $1 =~ ^${valid_commands}$ ]]; then
-      print_error "invalid command : $1"
+    if ! [[ $1 =~ ^"$valid_commands"$ ]]; then
+      print_error "invalid command : $cmd"
       return 1
     fi
     cmd=$1
     shift
   fi
+  #check number ofparameter
+  case $cmd in
+  add)
+    if [[ $# == 0 ]]; then
+      cmd="help"
+      exit_status=1
+    fi
+    ;;
+  clone) ;;
+  init) ;;
+  link) ;;
+  unlink) ;;
+  esac
+
   # shellcheck disable=SC1090
   source "$KAWAZU_ROOT_DIR/lib/command_$cmd.sh"
-  "command_$cmd"
+
+  "command_$cmd" "$@"
 }
 
 main "$@"
