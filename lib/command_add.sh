@@ -1,21 +1,17 @@
 #!/usr/bin/env bash
 command_add() {
   if [[ $# != 1 ]]; then
-    print_error "${FUNCNAME[0]} : need filepath"
+    print_error "invalid arguments"
+    command_help "add"
     return 1
   fi
   local target_path=$1
   local target_abs_path
-  local target_repository=$KAWAZU_DOTFILES_DIR
   local target_repository_path
 
-  if [[ ! -e $target_repository ]]; then
-    print_error "$target_repository does not exist."
-    return 1
-  fi
-
-  if (cd "$target_repository" && ! git rev-parse --is-inside-work-tree &>/dev/null); then
-    print_error "$target_repository is not git repository"
+  # check worktree
+  if ! is_git_worktree_root "$KAWAZU_DOTFILES_DIR" &>/dev/null; then
+    print_error "$KAWAZU_DOTFILES_DIR is not git worktree"
     return 1
   fi
 
@@ -40,16 +36,12 @@ command_add() {
   target_repository_path=$KAWAZU_DOTFILES_DIR${target_abs_path#$HOME}
   #When the symbolic link is the corresponding repository file. skip
   if [[ -L $target_path ]]; then
-    if [[ ! -e $target_path ]]; then
-      print_error "$target_path is broken symbolic link. skip"
-      return 1
-    elif [[ $(get_symlink_abs_path "$target_path") == "$target_repository_path" ]]; then
+    if [[ -e $target_path && "$(get_symlink_abs_path "$target_path")" == "$target_repository_path" ]]; then
       print_info "$target_path is already managed by git. skip"
       return 1
     fi
   fi
 
-  print_info "add $target_path → $target_repository_path"
   #when target file already managed by git.then confirm and overwrite
   if [[ -e $target_repository_path ]]; then
     confirm "$target_repository_path is already exist. do you want to overwrite?"
@@ -61,8 +53,8 @@ command_add() {
 
   #git add
   result=$(cd "$(dirname "$target_repository_path")" && git add "./$(basename "$target_repository_path")") || {
-    print_error "$result\\nmv $target_repository_path → $target_path"
-    mv "$target_repository_path" "$(dot_slash"$target_path")"
+    print_error "$result"
+    mv "$target_repository_path" "$(dot_slash "$target_path")"
     return 1
   }
 

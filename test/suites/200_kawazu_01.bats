@@ -4,21 +4,22 @@ load ../helper/bats-support/load
 load ../helper/bats-assert/load
 load ../helper/bats-file/load
 
-setup() {
-  prepare_test
-  source "$KAWAZU_ROOT_DIR/kawazu.sh"
-  KAWAZU_ROOT_DIR=$KAWAZU_ROOT_DIR/test/mock
-  source "$KAWAZU_ROOT_DIR/mock.sh"
-  export -f print_mock_info
+load ../fixtures/env
 
-  cd "$HOME"
+source "$KAWAZU_ROOT_DIR/kawazu.sh"
+KAWAZU_ROOT_DIR=$KAWAZU_ROOT_DIR/test/mock
+source "$KAWAZU_ROOT_DIR/mock.sh"
+export -f print_mock_info
+
+setup() {
+  mkdir -p "$KAWAZU_DOTFILES_DIR"
 }
 
 teardown() {
   delete_test_dir
 }
 
-@test "kawazu with no args" {
+@test "kawazu run with no args" {
   run kawazu
   assert_mock_output 0 main
   assert_success

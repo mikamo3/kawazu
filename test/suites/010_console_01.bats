@@ -4,10 +4,8 @@ load ../helper/bats-support/load
 load ../helper/bats-assert/load
 load ../helper/bats-file/load
 
-setup(){
-  export_env
-  source ${KAWAZU_ROOT_DIR}/lib/console.sh
-}
+load ../fixtures/env
+source ${KAWAZU_ROOT_DIR}/lib/console.sh
 
 @test "print_error" {
   run print_error message
@@ -43,13 +41,13 @@ setup(){
 }
 
 @test "print_debug with debug flg is true" {
-  export OPT_DEBUG=true
+  OPT_DEBUG=true
   run print_debug message
   assert_output -p "[debug] message"
 }
 
 @test "print_debug with debug flg is true with newline" {
-  export OPT_DEBUG=true
+  OPT_DEBUG=true
   run print_debug "message\nnewline"
   assert_line -n 0 -p "[debug] message"
   assert_line -n 1 -p "newline"
@@ -57,7 +55,7 @@ setup(){
 
 
 @test "print_debug with debug flg is false" {
-  export OPT_DEBUG=false
+  OPT_DEBUG=false
   run print_debug message
   assert_output -p ""
 }

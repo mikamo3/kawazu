@@ -4,15 +4,10 @@ load ../helper/bats-support/load
 load ../helper/bats-assert/load
 load ../helper/bats-file/load
 
-setup() {
-  prepare_test
-  source ${KAWAZU_ROOT_DIR}/lib/console.sh
-  source ${KAWAZU_ROOT_DIR}/lib/command_help.sh
-}
+load ../fixtures/env
 
-teardown() {
-  :
-}
+source ${KAWAZU_ROOT_DIR}/lib/console.sh
+source ${KAWAZU_ROOT_DIR}/lib/command_help.sh
 
 @test "command_help help" {
   run command_help

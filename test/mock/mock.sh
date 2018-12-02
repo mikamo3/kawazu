@@ -9,7 +9,7 @@ print_mock_info() {
     printf " \"%s\"" "$i"
   done
   printf "\\n"
-  printf "options:\
+  printf "options :\
  OPT_DEBUG=%s,\
  OPT_FORCE=%s,\
  OPT_SKIP=%s\\n" "${OPT_DEBUG:-false}" "${OPT_FORCE:-false}" "${OPT_SKIP:-false}"

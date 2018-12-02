@@ -2,20 +2,29 @@
 
 #if no argments unlink all git managed files
 command_unlink() {
+  local result="0"
   if [[ $# == 0 ]]; then
     while IFS= read -r -d $'\0' file <&3; do
-      [[ ! -L "$HOME${file#$KAWAZU_DOTFILES_DIR}" ]] && continue
-      _do_unlink "$HOME${file#$KAWAZU_DOTFILES_DIR}"
+      local target_path="$HOME${file#$KAWAZU_DOTFILES_DIR}"
+
+      [[ ! -L "$target_path" ]] && continue
+      [[ ! "$file" == "$(get_symlink_abs_path "$target_path")" ]] && continue
+      _do_unlink "$target_path" || result=$?
     done 3< <(list_git_managed_files "$KAWAZU_DOTFILES_DIR")
-  else
+    return $result
+  elif [[ $# == 1 ]]; then
     _do_unlink "$1"
+  else
+    print_error "invalid arguments"
+    command_help "unlink"
+    return 1
   fi
-  return 0
 }
 
 _do_unlink() {
   if [[ $# != 1 ]]; then
-    print_error "need target_path"
+    print_error "invalid arguments"
+    command_help "unlink"
     return 1
   fi
   local target_path=$1
@@ -28,12 +37,17 @@ _do_unlink() {
     fi
     return 1
   fi
-  # test -e return false when target_path link is link and broken link
-  if ! find "$(readlink "$target_path")" &>/dev/null; then
-    print_error "$target_path is not dotfiles link"
+
+  if [[ ! "$(get_abs_path "$target_path")" =~ ^$HOME ]]; then
+    print_error "$target_path is outside home directory"
     return 1
   fi
-  link_to_path="$(get_abs_path "$(readlink "$target_path")")"
+
+  link_to_path="$(get_symlink_abs_path "$target_path")" || {
+    print_error "link destination of $target_path does not exist"
+    return 1
+  }
+
   if [[ ! "$link_to_path" =~ ^$KAWAZU_DOTFILES_DIR ]]; then
     print_error "$target_path is not dotfiles link"
     return 1

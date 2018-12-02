@@ -4,12 +4,11 @@ load ../helper/bats-support/load
 load ../helper/bats-assert/load
 load ../helper/bats-file/load
 
-setup() {
-  export_env
-  expect_header="\r\n\u001b\[33m\[\?\]"
-  expect_reset="\u001b\[0m"
-  expect_prompt="\\r\\nbash-\[0-9\]{1,}\\\\.\[0-9\]{1,}\\\\$"
-}
+load ../fixtures/env
+
+expect_header="\r\n\u001b\[33m\[\?\]"
+expect_reset="\u001b\[0m"
+expect_prompt="\\r\\nbash-\[0-9\]{1,}\\\\.\[0-9\]{1,}\\\\$"
 
 @test "question answer anwser to question" {
   run expect <<EOF

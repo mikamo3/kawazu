@@ -4,15 +4,11 @@ load ../helper/bats-support/load
 load ../helper/bats-assert/load
 load ../helper/bats-file/load
 
-setup() {
-  prepare_test
-  KAWAZU_BIN=$KAWAZU_ROOT_DIR/bin/kawazu
-  KAWAZU_ROOT_DIR=$KAWAZU_ROOT_DIR/test/mock
-  source "$KAWAZU_ROOT_DIR/mock.sh"
-  export -f print_mock_info
-
-  cd "$HOME"
-}
+load ../fixtures/env
+KAWAZU_BIN=$KAWAZU_ROOT_DIR/bin/kawazu
+KAWAZU_ROOT_DIR=$KAWAZU_ROOT_DIR/test/mock
+source "$KAWAZU_ROOT_DIR/mock.sh"
+export -f print_mock_info
 
 teardown() {
   delete_test_dir

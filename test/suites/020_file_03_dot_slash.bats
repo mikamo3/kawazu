@@ -4,10 +4,9 @@ load ../helper/bats-support/load
 load ../helper/bats-assert/load
 load ../helper/bats-file/load
 
-setup() {
-  export_env
-  source ${KAWAZU_ROOT_DIR}/lib/file.sh
-}
+load ../fixtures/env
+
+source ${KAWAZU_ROOT_DIR}/lib/file.sh
 
 @test "dot_slash /path return /path" {
   run dot_slash /path

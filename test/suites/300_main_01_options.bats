@@ -4,21 +4,18 @@ load ../helper/bats-support/load
 load ../helper/bats-assert/load
 load ../helper/bats-file/load
 
-setup() {
-  prepare_test
-  KAWAZU_BIN=$KAWAZU_ROOT_DIR/bin/kawazu
-  KAWAZU_ROOT_DIR=$KAWAZU_ROOT_DIR/test/mock
-  source "$KAWAZU_ROOT_DIR/mock.sh"
-  export -f print_mock_info
+load ../fixtures/env
 
-  cd "$HOME"
-}
+KAWAZU_BIN=$KAWAZU_ROOT_DIR/bin/kawazu
+KAWAZU_ROOT_DIR=$KAWAZU_ROOT_DIR/test/mock
+source "$KAWAZU_ROOT_DIR/mock.sh"
+export -f print_mock_info
 
 teardown() {
   delete_test_dir
 }
 
-@test "main with no option" {
+@test "main run with no option" {
   run $KAWAZU_BIN
   assert_mock_output 0 command_help
   assert_failure

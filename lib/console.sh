@@ -11,7 +11,7 @@ readonly CL_WHITE="\\E[37m"
 readonly CL_RST="\\E[0m"
 
 print_error() {
-  echo -e "${CL_RED}[✗] $1${CL_RST} " 1>&2
+  echo -e "${CL_RED}[✗] $1${CL_RST}" 1>&2
 }
 print_success() {
   echo -e "${CL_GREEN}[✓] $1${CL_RST}"
