@@ -3,10 +3,10 @@ FROM bash:${bash_var}
 WORKDIR /tmp
 RUN adduser -s /uer/local/bin/bash -D kawazu
 RUN apk update && apk add --no-cache git xz expect
-RUN wget "https://storage.googleapis.com/shellcheck/shellcheck-stable.linux.x86_64.tar.xz" && \
-  tar --xz -xvf shellcheck-stable.linux.x86_64.tar.xz && \
-  cp shellcheck-stable/shellcheck /usr/bin/ && \
-  rm -rf shellcheck-stable* && \
+RUN wget "https://storage.googleapis.com/shellcheck/shellcheck-v0.5.0.linux.x86_64.tar.xz" && \
+  tar --xz -xvf shellcheck-v0.5.0.linux.x86_64.tar.xz && \
+  cp shellcheck-v0.5.0/shellcheck /usr/bin/ && \
+  rm -rf shellcheck-v0.5.0* && \
   git clone https://github.com/bats-core/bats-core.git && \
   cd bats-core && \
   ./install.sh /usr/local && \
