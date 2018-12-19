@@ -39,10 +39,22 @@ teardown() {
   assert_failure
 }
 
+@test "main option: -v" {
+  run $KAWAZU_BIN -v
+  assert_output -e "kawazu version \d+\.\d+"
+  assert_success
+}
+
 @test "main option: -d -f -s" {
   run $KAWAZU_BIN -d -f -s
   assert_mock_output -dfs 0 command_help
   assert_failure
+}
+
+@test "main option: -d -f -s -v" {
+  run $KAWAZU_BIN -d -f -s -v
+  assert_output -e "kawazu version \d+\.\d+"
+  assert_success
 }
 
 @test "main option: -df" {
@@ -56,6 +68,13 @@ teardown() {
   assert_mock_output -dfs 0 command_help
   assert_failure
 }
+
+@test "main option: -dfsv" {
+  run $KAWAZU_BIN -dfsv
+  assert_output -e "kawazu version \d+\.\d+"
+  assert_success
+}
+
 
 @test "main option: --debug" {
   run $KAWAZU_BIN --debug
@@ -75,11 +94,24 @@ teardown() {
   assert_failure
 }
 
+@test "main option: --version" {
+  run $KAWAZU_BIN --version
+  assert_output -e "kawazu version \d+\.\d+"
+  assert_success
+}
+
 @test "main option: --debug --force --skip" {
   run $KAWAZU_BIN --debug --force --skip
   assert_mock_output -dfs 0 command_help
   assert_failure
 }
+
+@test "main option: --debug --force --skip --version" {
+  run $KAWAZU_BIN --debug --force --skip --version
+  assert_output -e "kawazu version \d+\.\d+"
+  assert_success
+}
+
 @test "main option: --debug --skip" {
   run $KAWAZU_BIN --debug --skip
   assert_mock_output -ds 0 command_help
