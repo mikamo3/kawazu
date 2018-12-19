@@ -12,14 +12,14 @@ teardown() {
   [[ -n "$TEST_WORK_DIR" ]] && rm -rf "$TEST_WORK_DIR"
 }
 
-@test "assert_output_contain_in_array output: blank, array: empty" {
+@test "assert_output_contain_in_array output : blank, array : empty" {
   expect=()
   run assert_output_contain_in_array "echo -e \"\"" expect
   [[ "$status" == 0 ]]
   [ "${#lines[@]}" -eq 0 ]
 }
 
-@test "assert_output_contain_in_array output: a\0, array: empty" {
+@test "assert_output_contain_in_array output : a\0, array : empty" {
   expect=()
   run assert_output_contain_in_array "echo -e \"a\0\"" expect
   assert_failure
@@ -28,7 +28,7 @@ teardown() {
   assert_line -n 1 -e "output\\s+:\\s+a"
 }
 
-@test "assert_output_contain_in_array output: blank, array: (a,b)" {
+@test "assert_output_contain_in_array output : blank, array : (a,b)" {
   expect=(a b)
   run assert_output_contain_in_array "echo -e \"\"" expect
   assert_failure
@@ -38,7 +38,7 @@ teardown() {
   assert_line -n 2 -e "value\\s+:\\s+b"
 }
 
-@test "assert_output_contain_in_array output: a\0b\0c\0, array: (a,c)" {
+@test "assert_output_contain_in_array output : a\0b\0c\0, array : (a,c)" {
   expect=(a c)
   run assert_output_contain_in_array "echo -e \"a\0b\0c\0\"" expect
   assert_failure
@@ -47,7 +47,7 @@ teardown() {
   assert_line -n 1 -e "output\\s+:\\s+b"
 }
 
-@test "assert_output_contain_in_array output: \"a b\"\0\"b\nc\"\0👹\0, array: (\"a b\",\"b\nc\",👹)" {
+@test "assert_output_contain_in_array output : \"a b\"\0\"b\nc\"\0👹\0, array : (\"a b\",\"b\nc\",👹)" {
   expect=("a b" "b
 c" "👹")
   run assert_output_contain_in_array "echo -e \"a b\0b\nc\0👹\0\"" expect
@@ -55,7 +55,7 @@ c" "👹")
   assert_equal ${#lines[@]} 0
 }
 
-@test "assert_mock_output called_from: test" {
+@test "assert_mock_output called_from : test" {
   mock_output="called from : test
 parameters :
 options : OPT_DEBUG=false, OPT_FORCE=false, OPT_SKIP=false"
@@ -65,7 +65,7 @@ options : OPT_DEBUG=false, OPT_FORCE=false, OPT_SKIP=false"
   assert_equal ${#lines[@]} 0
 }
 
-@test "assert_mock_output params: \"a\" \"b\" \"c d\"" {
+@test "assert_mock_output params : \"a\" \"b\" \"c d\"" {
   mock_output="called from : test
 parameters : \"a\" \"b\" \"c d\"
 options : OPT_DEBUG=false, OPT_FORCE=false, OPT_SKIP=false"
@@ -119,7 +119,7 @@ options : OPT_DEBUG=true, OPT_FORCE=true, OPT_SKIP=true"
   assert_output -p "unknown option"
 }
 
-@test "assert_mock_output called_from: expect test actual func " {
+@test "assert_mock_output called_from : expect test actual func " {
   mock_output="called from : func
 parameters :
 options : OPT_DEBUG=false, OPT_FORCE=false, OPT_SKIP=false"
@@ -130,7 +130,7 @@ options : OPT_DEBUG=false, OPT_FORCE=false, OPT_SKIP=false"
   assert_output -p "called from : func"
 }
 
-@test "assert_mock_output parameters: expect a b c actual d e" {
+@test "assert_mock_output parameters : expect a b c actual d e" {
   mock_output="called from : test
 parameters : \"d\" \"e\"
 options : OPT_DEBUG=false, OPT_FORCE=false, OPT_SKIP=false"
@@ -157,7 +157,7 @@ options : OPT_DEBUG=true, OPT_FORCE=false, OPT_SKIP=false"
   assert_failure
 }
 
-@test "assert_git_status expect: untracked, actual: added to index" {
+@test "assert_git_status expect : untracked, actual : added to index" {
   git init "$TEST_WORK_DIR"
   touch "$TEST_WORK_DIR/file"
   (
@@ -168,14 +168,14 @@ options : OPT_DEBUG=true, OPT_FORCE=false, OPT_SKIP=false"
   assert_failure
 }
 
-@test "assert_git_status expect: added to index, actual: untracked" {
+@test "assert_git_status expect : added to index, actual : untracked" {
   git init "$TEST_WORK_DIR"
   touch "$TEST_WORK_DIR/file"
   run assert_git_status "$TEST_WORK_DIR/file" "A "
   assert_failure
 }
 
-@test "assert_git_status expect: added to index, actual: added to index" {
+@test "assert_git_status expect : added to index, actual : added to index" {
   git init "$TEST_WORK_DIR"
   touch "$TEST_WORK_DIR/file"
   (
@@ -186,7 +186,7 @@ options : OPT_DEBUG=true, OPT_FORCE=false, OPT_SKIP=false"
   assert_success
 }
 
-@test "assert_git_status expect: untracked, actual: untracked" {
+@test "assert_git_status expect : untracked, actual : untracked" {
   git init "$TEST_WORK_DIR"
   touch "$TEST_WORK_DIR/file"
   run assert_git_status "$TEST_WORK_DIR/file" "??"

@@ -220,7 +220,7 @@ EOF
   assert_equal "$(cat $KAWAZU_DOTFILES_DIR/file)" "git file"
 }
 
-@test "target file is ignored file"  {
+@test "command_add target file is ignored file"  {
   echo "file" > "$KAWAZU_DOTFILES_DIR/.gitignore"
   touch "$HOME/file"
   run command_add "$HOME/file"

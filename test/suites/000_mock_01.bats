@@ -13,7 +13,7 @@ source "$BATS_TEST_DIRNAME/../mock/mock.sh"
   assert_success
 }
 
-@test "mock args: a" {
+@test "mock args : a" {
   run print_mock_info a
   assert_line -n 0 "called from : run"
   assert_line -n 1 "parameters : \"a\""
@@ -21,7 +21,7 @@ source "$BATS_TEST_DIRNAME/../mock/mock.sh"
   assert_success
 }
 
-@test "mock args: a b" {
+@test "mock args : a b" {
   run print_mock_info a b
   assert_line -n 0 "called from : run"
   assert_line -n 1 "parameters : \"a\" \"b\""
@@ -29,7 +29,7 @@ source "$BATS_TEST_DIRNAME/../mock/mock.sh"
   assert_success
 }
 
-@test "mock args: a b \"c d\"" {
+@test "mock args : a b \"c d\"" {
   run print_mock_info a b "c d"
   assert_line -n 0 "called from : run"
   assert_line -n 1 "parameters : \"a\" \"b\" \"c d\""
@@ -64,7 +64,7 @@ source "$BATS_TEST_DIRNAME/../mock/mock.sh"
   assert_success
 }
 
-@test "mock args: contain fail" {
+@test "mock args : contain fail" {
   run print_mock_info fail
   assert_output ""
   assert_failure
