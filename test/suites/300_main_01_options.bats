@@ -41,7 +41,7 @@ teardown() {
 
 @test "main option : -v" {
   run $KAWAZU_BIN -v
-  assert_output -e "kawazu version \d+\.\d+"
+  assert_mock_output 0 print_version
   assert_success
 }
 
@@ -53,7 +53,7 @@ teardown() {
 
 @test "main option : -d -f -s -v" {
   run $KAWAZU_BIN -d -f -s -v
-  assert_output -e "kawazu version \d+\.\d+"
+  assert_mock_output -dfs 0 print_version
   assert_success
 }
 
@@ -71,7 +71,7 @@ teardown() {
 
 @test "main option : -dfsv" {
   run $KAWAZU_BIN -dfsv
-  assert_output -e "kawazu version \d+\.\d+"
+  assert_mock_output -dfs 0 print_version
   assert_success
 }
 
@@ -96,7 +96,7 @@ teardown() {
 
 @test "main option : --version" {
   run $KAWAZU_BIN --version
-  assert_output -e "kawazu version \d+\.\d+"
+  assert_mock_output 0 print_version
   assert_success
 }
 
@@ -108,7 +108,7 @@ teardown() {
 
 @test "main option : --debug --force --skip --version" {
   run $KAWAZU_BIN --debug --force --skip --version
-  assert_output -e "kawazu version \d+\.\d+"
+  assert_mock_output -dfs 0 print_version
   assert_success
 }
 
@@ -126,12 +126,12 @@ teardown() {
 
 @test "main contain invalid long option" {
   run $KAWAZU_BIN --debug --invalid_option -f
-  assert_output -p "[✗] invalid option : --invalid_option"
+  assert_mock_output -d 0 print_error "invalid option : --invalid_option"
   assert_failure
 }
 
 @test "main contain invalid short option" {
   run $KAWAZU_BIN --debug -x -f
-  assert_output -p "[✗] invalid option : -x"
+  assert_mock_output -d 0 print_error "invalid option : -x"
   assert_failure
 }

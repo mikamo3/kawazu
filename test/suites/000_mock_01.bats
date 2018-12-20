@@ -66,6 +66,8 @@ source "$BATS_TEST_DIRNAME/../mock/mock.sh"
 
 @test "mock args : contain fail" {
   run print_mock_info fail
-  assert_output ""
+  assert_line -n 0 "called from : run"
+  assert_line -n 1 "parameters : \"fail\""
+  assert_line -n 2 "options : OPT_DEBUG=false, OPT_FORCE=false, OPT_SKIP=false"
   assert_failure
 }

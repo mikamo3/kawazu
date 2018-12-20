@@ -141,7 +141,23 @@ main() {
   # shellcheck disable=SC1090
   source "$KAWAZU_ROOT_DIR/lib/command_$cmd.sh"
   case "$cmd" in
-  add | link | unlink)
+  add)
+    # shellcheck disable=SC1090
+    source "$KAWAZU_ROOT_DIR/lib/command_link.sh"
+    for param in "${params[@]}"; do
+      abs_path="$(get_abs_path "$param")" || {
+        exit_status=$?
+        print_error "$param does not exist"
+        continue
+      }
+      command_add "$param" && command_link "${KAWAZU_DOTFILES_DIR}${abs_path#$HOME}"
+      result_code=$?
+      [[ $result_code != 0 ]] && exit_status=$result_code
+      unset result_code
+      unset abs_path
+    done
+    ;;
+  link | unlink)
     for param in "${params[@]}"; do
       command_$cmd "$param"
       result_code=$?
