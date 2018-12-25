@@ -18,7 +18,7 @@ is_git_managed_file() {
   target_path="$(dot_slash "$1")"
   result=$(
     cd "$(dirname "$target_path")" || return 1
-    git ls-files --recurse-submodules "$target_path" 2>/dev/null
+    git ls-files --recurse-submodules "$(basename "$target_path")" 2>/dev/null
   )
   [[ -z "$result" ]] && return 1
   return 0

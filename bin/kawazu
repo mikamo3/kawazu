@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 main() {
+  set -e
   local cmd
   local exit_status=0
   local -a params=()
@@ -118,23 +119,8 @@ main() {
       params=("$@")
     fi
     ;;
-  link)
-    if [[ $# == 0 ]]; then
-      cmd="help"
-      params=("link")
-      exit_status=1
-    else
-      params=("$@")
-    fi
-    ;;
-  unlink)
-    if [[ $# == 0 ]]; then
-      cmd="help"
-      params=("unlink")
-      exit_status=1
-    else
-      params=("$@")
-    fi
+  link | unlink)
+    params=("$@")
     ;;
   esac
 
@@ -158,18 +144,16 @@ main() {
     done
     ;;
   link | unlink)
-    for param in "${params[@]}"; do
-      command_$cmd "$param"
-      result_code=$?
-      [[ $result_code != 0 ]] && exit_status=$result_code
-      unset result_code
-    done
+    if [[ "${#params[@]}" == 0 ]]; then
+      command_$cmd
+    else
+      for param in "${params[@]}"; do
+        command_$cmd "$param" || exit_status=$?
+      done
+    fi
     ;;
   *)
-    command_$cmd "${params[@]}"
-    result_code=$?
-    [[ $result_code != 0 ]] && exit_status=$result_code
-    unset result_code
+    command_$cmd "${params[@]}" || exit_status=$?
     ;;
   esac
 

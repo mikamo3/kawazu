@@ -81,8 +81,8 @@ teardown() {
 
 @test "main command : link params : none" {
   run $KAWAZU_BIN link
-  assert_mock_output 0 command_help link
-  assert_failure
+  assert_mock_output 0 command_link
+  assert_success
 }
 
 @test "main command : link params : a" {
@@ -100,8 +100,8 @@ teardown() {
 
 @test "main command : unlink params : none" {
   run $KAWAZU_BIN unlink
-  assert_mock_output 0 command_help unlink
-  assert_failure
+  assert_mock_output 0 command_unlink
+  assert_success
 }
 
 @test "main command : unlink params : a" {
