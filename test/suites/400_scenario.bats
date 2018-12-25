@@ -69,7 +69,7 @@ teardown() {
 # machine c
 # unlink all files
 
-@test "scenario 1 : (machine a) init -> add some dotfiles -> commit it -> push to remote repos" {
+@test "scenario 1 : (machine a) init -> add some dotfiles -> commit -> push" {
 
   # create bare repository
   git init --bare "$GIT_LOCAL_BARE_REPOSITORY"
@@ -116,7 +116,7 @@ teardown() {
   tar -czf "$ARC_MACHINE_A" .
 }
 
-@test "scenario 2 : (machine b) clone from remote repos -> link from repos -> edit some exist file -> add new dotfiles -> commit it -> push to remote repos" {
+@test "scenario 2 : (machine b) clone from remote repos -> link from repos -> edit some exist file -> add new dotfiles -> commit -> push" {
   # some file exist in home directory
   touch .file_a
   run kawazu clone "$GIT_LOCAL_BARE_REPOSITORY"
@@ -194,7 +194,7 @@ teardown() {
   tar -czf "$ARC_MACHINE_B" .
 }
 
-@test "scenario 5 : (machine c) clone from remote repos (branch c) -> link -> add new files -> commit -> push" {
+@test "scenario 5 : (machine c) clone from remote repos (branch c) -> link -> add new dotfiles -> commit -> push" {
   run kawazu clone "$GIT_LOCAL_BARE_REPOSITORY" "c"
   run kawazu link
   echo "fix on machine c" >> .file_a
@@ -210,7 +210,7 @@ teardown() {
   tar -czf "$ARC_MACHINE_C" .
 }
 
-@test "scenario 6 : (machine a) pull -> edit exist file -> add new files -> commit -> push to remote repos" {
+@test "scenario 6 : (machine a) pull -> edit exist file -> add new dotfiles -> commit -> push" {
   tar -xf "$ARC_MACHINE_A"
   kawazu cd
   git pull
@@ -268,7 +268,7 @@ teardown() {
 }
 
 
-@test "scenario 8 : (machine b) unlink dotfiles" {
+@test "scenario 9 : (machine b) unlink dotfiles" {
   tar -xf "$ARC_MACHINE_B"
   kawazu unlink
   assert_success
@@ -283,7 +283,7 @@ teardown() {
 }
 
 
-@test "scenario 8 : (machine c) unlink dotfiles" {
+@test "scenario 10 : (machine c) unlink dotfiles" {
   tar -xf "$ARC_MACHINE_C"
   kawazu unlink
   assert_success
