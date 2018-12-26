@@ -11,7 +11,6 @@ source ${KAWAZU_ROOT_DIR}/lib/command_help.sh
 
 @test "command_help help" {
   run command_help
-  assert_output -p "usage"
   assert_success
 }
 
