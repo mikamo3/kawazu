@@ -20,6 +20,11 @@ source ${KAWAZU_ROOT_DIR}/lib/command_help.sh
   assert_success
 }
 
+@test "command_help help cd" {
+  run command_help cd
+  assert_success
+}
+
 @test "command_help help init" {
   run command_help init
   assert_success
